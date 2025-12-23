@@ -1,0 +1,78 @@
+{
+    "projects": {
+        "Sandbox": {
+            "additionalDependencies": [
+                "sfml-graphics-s-d.lib",
+                "sfml-window-s-d.lib",
+                "sfml-audio-s-d.lib",
+                "sfml-system-s-d.lib",
+                "opengl32.lib",
+                "glu32.lib",
+                "gdi32.lib",
+                "winmm.lib",
+                "dwmapi.lib",
+                "freetype.lib"
+            ],
+            "additionalIncludeDirectories": [
+                "$(SolutionDir)../vendor/SFML-2.5.1/include",
+                "$(SolutionDir)../src/LightEngine"
+            ],
+            "additionalLibraryDirectories": [
+                "$(SolutionDir)../vendor/SFML-2.5.1/lib",
+                "$(SolutionDir)../ide/vs/LightEngine/Build/Debug"
+            ],
+            "dependencies": [
+                "LightEngine"
+            ],
+            "dependents": [],
+            "guid": "16661F53-199C-5546-25AA-618141615844",
+            "lib": false,
+            "pch": false,
+            "preprocessorDefinitions": [
+                "_DEBUG",
+                "_CONSOLE",
+                "SFML_STATIC"
+            ],
+            "vcpkg": false,
+            "window": false
+        },
+        "LightEngine": {
+            "additionalDependencies": [
+                "sfml-graphics-s-d.lib",
+                "sfml-window-s-d.lib",
+                "sfml-audio-s-d.lib",
+                "sfml-system-s-d.lib",
+                "opengl32.lib",
+                "glu32.lib",
+                "gdi32.lib",
+                "winmm.lib",
+                "dwmapi.lib",
+                "freetype.lib"
+            ],
+            "additionalIncludeDirectories": [
+                "$(SolutionDir)../vendor/SFML-2.5.1/include"
+            ],
+            "additionalLibraryDirectories": [
+                "$(SolutionDir)../vendor/SFML-2.5.1/lib"
+            ],
+            "dependencies": [],
+            "dependents": [
+                "Sandbox"
+            ],
+            "guid": "09123BFE-3F80-2213-2D40-44792042057E",
+            "lib": true,
+            "pch": false,
+            "preprocessorDefinitions": [
+                "_DEBUG",
+                "_CONSOLE",
+                "SFML_STATIC"
+            ],
+            "vcpkg": false,
+            "window": false
+        }
+    },
+    "solution_guid": "6B045A50-69CF-1E1C-2808-683D565F65A7",
+    "solution_name": "Math_Proj_1",
+    "startup_project": "Sandbox",
+    "version": "1.17.4"
+}
