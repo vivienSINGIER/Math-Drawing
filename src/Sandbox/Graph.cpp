@@ -11,7 +11,7 @@
 void Graph::OnInitialize()
 {
     Diamond f;
-    f.origin = sf::Vector2f(10, 10);
+    f.origin = sf::Vector2f(5, 5);
     f.a = 2;
     f.b = 3;
     curve1.CalculateShape(f);
