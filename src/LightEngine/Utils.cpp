@@ -34,6 +34,19 @@ namespace Utils
 			result *= i;
 		return result;
 	}
+
+	float BinomialCoeff(int n, int k)
+	{
+		if (k < 0 || k > n) return 0;
+		if (k == 0 || k == n) return 1;
+
+		float result = 1;
+		for (int i = 1; i <= k; i++)
+		{
+			result *= (n - i + 1) / i;
+		}
+		return result;
+	}
 	
 	float Cos(float x)
 	{
