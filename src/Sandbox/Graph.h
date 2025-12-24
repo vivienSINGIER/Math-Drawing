@@ -39,7 +39,6 @@ private:
     sf::View* m_pView = nullptr;
     
     void DrawGraph();
-    void DrawVertex(vertex& vertex);
     void HandleMouseMovement();
 
     void InitDiamond();

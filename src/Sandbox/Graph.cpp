@@ -12,7 +12,8 @@ void Graph::OnInitialize()
 {
     //InitDiamond();
     //InitHeart();
-    InitEllipse();
+    //InitEllipse();
+    InitSpade();
 
     //Zoom
     m_pView = GameManager::Get()->GetView();
@@ -202,7 +203,33 @@ void Graph::InitEllipse()
 
 void Graph::InitSpade()
 {
-    Curve
+    sf::Vector2f offset = sf::Vector2f(1.f, 1.f);
+
+    Curve curveBase;
+    Hermite hermiteBase;
+    hermiteBase.v1 = sf::Vector2f(-0.5f, 0.f) + offset;
+    hermiteBase.fp1 = 0.f;
+    hermiteBase.v2 = sf::Vector2f(0.5f, 0.f) + offset;
+    hermiteBase.fp2 = 0.f;
+    curveBase.CalculateCurve(-0.5f + offset.x, 0.5f + offset.x, 10, hermiteBase);
+    vCurves.push_back(curveBase);
+
+    Curve curve1;
+    ArcOfCircle arcOfCircle1;
+    arcOfCircle1.origin = sf::Vector2f(-1.0f, 2.0f) + offset;
+    arcOfCircle1.minAngle = 0.0f + 3 * PI / 4;
+    arcOfCircle1.maxAngle = PI + 3 * PI / 4;
+    curve1.CalculateShape(arcOfCircle1);
+    vCurves.push_back(curve1);
+
+    Curve curve2;
+    ArcOfCircle arcOfCircle2;
+    arcOfCircle2.origin = sf::Vector2f(1.0f, 2.0f) + offset;
+    arcOfCircle2.minAngle = 0.0f - 3 * PI / 4;
+    arcOfCircle2.maxAngle = PI - 3 * PI / 4;
+    curve2.CalculateShape(arcOfCircle2);
+    vCurves.push_back(curve2);
+
 }
 
 
