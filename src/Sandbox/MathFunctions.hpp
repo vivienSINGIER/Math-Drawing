@@ -126,6 +126,15 @@ struct BezierCurve : public MathShape
         }
         return result;
     }
+
+    void operator+=(sf::Vector2f offset)
+    {
+        for (vertex& vertex : controlPoints)
+        {
+            vertex.x += offset.x;
+            vertex.y += offset.y;
+        }
+    }
 };
 
 struct Ellipse : public MathShape

@@ -15,7 +15,7 @@ void Graph::OnInitialize()
     //InitEllipse();
     InitSpade();
 
-    InitBezier();
+    //InitBezier();
     
     //Zoom
     m_pView = GameManager::Get()->GetView();
@@ -205,7 +205,7 @@ void Graph::InitEllipse()
 
 void Graph::InitSpade()
 {
-    sf::Vector2f offset = sf::Vector2f(1.f, 1.f);
+    sf::Vector2f offset = sf::Vector2f(2.f, 1.f);
 
     Curve curveBase;
     Hermite hermiteBase;
@@ -219,19 +219,62 @@ void Graph::InitSpade()
     Curve curve1;
     ArcOfCircle arcOfCircle1;
     arcOfCircle1.origin = sf::Vector2f(-1.0f, 2.0f) + offset;
-    arcOfCircle1.minAngle = 0.0f + 3 * PI / 4;
-    arcOfCircle1.maxAngle = PI + 3 * PI / 4;
+    arcOfCircle1.minAngle = 3 * PI / 4; //135
+    arcOfCircle1.maxAngle = 7 * PI / 4; //315
     curve1.CalculateShape(arcOfCircle1);
     vCurves.push_back(curve1);
 
     Curve curve2;
     ArcOfCircle arcOfCircle2;
     arcOfCircle2.origin = sf::Vector2f(1.0f, 2.0f) + offset;
-    arcOfCircle2.minAngle = 0.0f - 3 * PI / 4;
-    arcOfCircle2.maxAngle = PI - 3 * PI / 4;
+    arcOfCircle2.minAngle = PI + PI / 4;
+    arcOfCircle2.maxAngle = 2 * PI + PI / 4;
     curve2.CalculateShape(arcOfCircle2);
     vCurves.push_back(curve2);
 
+    Curve curve3;
+    BezierCurve bezierCurve1;
+    bezierCurve1.controlPoints = {
+        {-0.5f, 0.f},
+        {-0.40f, 0.5f},
+        {-0.26f, 1.32f}
+    };
+    bezierCurve1 += offset;
+    curve3.CalculateShape(bezierCurve1);
+    vCurves.push_back(curve3);
+
+    Curve curve4;
+    BezierCurve bezierCurve2;
+    bezierCurve2.controlPoints = {
+        {0.5f, 0.f},
+        {0.40f, 0.5f},
+        {0.26f, 1.32f}
+    };
+    bezierCurve2 += offset;
+    curve4.CalculateShape(bezierCurve2);
+    vCurves.push_back(curve4);
+
+    Curve curve5;
+    BezierCurve bezierCurve3;
+    bezierCurve3.controlPoints = {
+        {-1.71f, 2.71f},
+        {-0.1f, 4.5f},
+        {0.f, 5.f}
+    };
+    bezierCurve3 += offset;
+    curve5.CalculateShape(bezierCurve3);
+    vCurves.push_back(curve5);
+
+    Curve curve6;
+    BezierCurve bezierCurve4;
+    bezierCurve4.controlPoints = {
+        {1.71f, 2.71f},
+        {0.1f, 4.5f},
+        {0.f, 5.f}
+    };
+    bezierCurve4 += offset;
+    curve6.CalculateShape(bezierCurve4);
+    vCurves.push_back(curve6);
 }
 
 void Graph::InitBezier()
