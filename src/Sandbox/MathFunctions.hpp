@@ -96,6 +96,38 @@ struct MathShape
     }
 };
 
+struct BezierCurve : public MathShape
+{
+    int steps = 50;
+    std::vector<vertex> controlPoints;
+
+    std::vector<vertex> operator()() const override
+    {
+        std::vector<vertex> result;
+        
+        float t = 0.0f;
+        float tStep = 1.0f / steps;
+
+        while (t <= 1.0f)
+        {
+            vertex v = {0.0f, 0.0f};
+
+            std::vector<vertex> temp = controlPoints;
+            for (int k = 1; k < controlPoints.size(); k++)
+            {
+                for (int i = 0; i < temp.size() - k; i++)
+                {
+                    temp[i].x = (1.0f - t) * temp[i].x + t * temp[i + 1].x;
+                    temp[i].y = (1.0f - t) * temp[i].y + t * temp[i + 1].y;
+                }
+            }
+            result.push_back(temp[0]);
+            t += tStep;
+        }
+        return result;
+    }
+};
+
 struct Ellipse : public MathShape
 {
     int n = 50;

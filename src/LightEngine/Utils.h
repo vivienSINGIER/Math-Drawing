@@ -6,8 +6,9 @@ namespace Utils
 {
 	float Pow(float x, int n);
 	float Sqrt(float x);
-	
 	int Factorial(int n);
+	float BinomialCoeff(int n, int k);
+	
 	float Cos(float x);
 	float Sin(float x);
 	

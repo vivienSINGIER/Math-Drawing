@@ -15,6 +15,8 @@ void Graph::OnInitialize()
     //InitEllipse();
     InitSpade();
 
+    InitBezier();
+    
     //Zoom
     m_pView = GameManager::Get()->GetView();
     m_windowSize = m_pView->getSize();
@@ -230,6 +232,22 @@ void Graph::InitSpade()
     curve2.CalculateShape(arcOfCircle2);
     vCurves.push_back(curve2);
 
+}
+
+void Graph::InitBezier()
+{
+    BezierCurve bezierCurve;
+    bezierCurve.controlPoints = {
+        {2.0f, 17.0f},
+        {6.6f, 1.8f},
+        {61.0f, 7.4f},
+        {12.0f, 37.0f},
+        {62.0f, 17.0f}
+    };
+
+    Curve curve;
+    curve.CalculateShape(bezierCurve);
+    vCurves.push_back(curve);
 }
 
 
