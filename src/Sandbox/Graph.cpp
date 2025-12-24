@@ -33,7 +33,7 @@ void Graph::OnEvent(const sf::Event& event)
             m_isMousePressed = false;
     }
 
-    //test zoom
+    //Zoom
     if (event.type == sf::Event::MouseWheelScrolled)
     {
         m_currentZoom += event.mouseWheelScroll.delta * -0.1f;
@@ -56,11 +56,6 @@ void Graph::OnUpdate()
     {
         curve.DrawPath(sf::Color::Blue);
     }
-}
-
-void Graph::DrawVertex(vertex& vertex)
-{
-    Debug::DrawCircle(vertex.x * TILE_SIZE, vertex.y * TILE_SIZE * -1.f, 5.f, sf::Color::Blue); //-1 because of the inversion with sfml
 }
 
 void Graph::DrawGraph()
@@ -207,7 +202,7 @@ void Graph::InitEllipse()
 
 void Graph::InitSpade()
 {
-
+    Curve
 }
 
 
