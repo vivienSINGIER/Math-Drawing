@@ -3,12 +3,15 @@
 #define CURVE_H_DEFINED
 #include <vector>
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/System/Vector2.hpp>
 
 class Curve 
 {
 public:
     Curve() = default;
     ~Curve() = default;
+
+    sf::Vector2f origin;
     
     std::vector<vertex> m_vertices;
 

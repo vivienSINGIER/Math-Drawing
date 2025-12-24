@@ -10,7 +10,7 @@ public:
     Graph() = default;
     ~Graph() = default;
 
-    Curve curve1;
+    std::vector<Curve> vCurves;
     
 protected:
     void OnInitialize();
@@ -33,8 +33,10 @@ private:
     float m_movementSpeed = 70.0f;
     
     void DrawGraph();
-
     void HandleMouseMovement();
+
+    void InitDiamond();
+    void InitHeart();
 };
 
 #endif

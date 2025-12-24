@@ -8,6 +8,7 @@
 
 #define TILE_SIZE 50.0f
 #define PI 3.141592653589f
+#define INF 1e6f
 
 struct vertex
 {

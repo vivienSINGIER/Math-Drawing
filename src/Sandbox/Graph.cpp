@@ -10,11 +10,7 @@
 
 void Graph::OnInitialize()
 {
-    Diamond f;
-    f.origin = sf::Vector2f(5, 5);
-    f.a = 2;
-    f.b = 3;
-    curve1.CalculateShape(f);
+    InitHeart();
 }
 
 void Graph::OnEvent(const sf::Event& event)
@@ -37,8 +33,10 @@ void Graph::OnUpdate()
     HandleMouseMovement();
     DrawGraph();
 
-    curve1.DrawPath(sf::Color::Blue);
-    // curve1.DrawPoints(sf::Color::Blue, 5.0f);
+    for (Curve &curve : vCurves)
+    {
+        curve.DrawPath(sf::Color::Blue);
+    }
 }
 
 void Graph::DrawGraph()
@@ -82,6 +80,81 @@ void Graph::HandleMouseMovement()
     mouseDelta *= m_movementSpeed * GameManager::Get()->GetDeltaTime();
 
     GameManager::Get()->GetView()->move(mouseDelta.x, -mouseDelta.y);
+}
+
+void Graph::InitDiamond()
+{
+    Curve curve;
+    curve.origin = sf::Vector2f(2.5f, 0.5f);
+    Hermite hermite;
+    hermite.v1 = sf::Vector2f(-2.0f, 3.0f);
+    hermite.fp1 = 0.3f;
+    hermite.v2 = sf::Vector2f(0.0f, 6.0f);
+    hermite.fp2 = 2.0f;
+    curve.CalculateCurve(-2.0f, 0.0f, 50, hermite);
+    vCurves.push_back(curve);
+
+    Curve curve2;
+    curve2.origin = sf::Vector2f(2.5f, 0.5f);
+    Hermite hermite2;
+    hermite2.v1 = sf::Vector2f(0.0f, 6.0f);
+    hermite2.fp1 = -2.0f;
+    hermite2.v2 = sf::Vector2f(2.0f, 3.0f);
+    hermite2.fp2 = -0.3f;
+    curve2.CalculateCurve(0.0f, 2.0f, 50, hermite2);
+    vCurves.push_back(curve2);
+
+    Curve curve3;
+    curve3.origin = sf::Vector2f(2.5f, 0.5f);
+    Hermite hermite3;
+    hermite3.v1 = sf::Vector2f(-2.0f, 3.0f);
+    hermite3.fp1 = -0.3f;
+    hermite3.v2 = sf::Vector2f(0.0f, 0.0f);
+    hermite3.fp2 = -2.0f;
+    curve3.CalculateCurve(-2.0f, 0.0f, 50, hermite3);
+    vCurves.push_back(curve3);
+
+    Curve curve4;
+    curve4.origin = sf::Vector2f(2.5f, 0.5f);
+    Hermite hermite4;
+    hermite4.v1 = sf::Vector2f(0.0f, 0.0f);
+    hermite4.fp1 = 2.0f;
+    hermite4.v2 = sf::Vector2f(2.0f, 3.0f);
+    hermite4.fp2 = 0.3f;
+    curve4.CalculateCurve(0.0f, 2.0f, 50, hermite4);
+    vCurves.push_back(curve4);
+}
+
+void Graph::InitHeart()
+{
+    Curve curve;
+    ArcOfCircle arcOfCircle;
+    arcOfCircle.origin = sf::Vector2f(-1.0f, 4.0f);
+    arcOfCircle.a = Utils::Sqrt(2);
+    arcOfCircle.b = Utils::Sqrt(2);
+    arcOfCircle.minAngle = PI / 4.0f;
+    arcOfCircle.maxAngle = PI;
+    curve.CalculateShape(arcOfCircle);
+    vCurves.push_back(curve);
+
+    Curve curve1;
+    ArcOfCircle arcOfCircle1;
+    arcOfCircle1.origin = sf::Vector2f(1.0f, 4.0f);
+    arcOfCircle1.a = Utils::Sqrt(2);
+    arcOfCircle1.b = Utils::Sqrt(2);
+    arcOfCircle1.minAngle = 0.0f;
+    arcOfCircle1.maxAngle = PI - PI / 4.0f;
+    curve1.CalculateShape(arcOfCircle1);
+    vCurves.push_back(curve1);
+
+    Curve curve2;
+    Hermite hermite2;
+    hermite2.v1 = sf::Vector2f(-1.0f - Utils::Sqrt(2), 4.0f);
+    hermite2.fp1 = -2.0f;
+    hermite2.v2 = sf::Vector2f(0.0f, 0.0f);
+    hermite2.fp2 = -0.9f;
+    curve2.CalculateCurve(-1.0f - Utils::Sqrt(2), 0.0f, 50, hermite2);
+    vCurves.push_back(curve2);
 }
 
 

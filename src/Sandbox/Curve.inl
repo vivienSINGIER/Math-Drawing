@@ -12,7 +12,7 @@ void Curve::CalculateCurve(float xmin, float xmax, int n, Func&& f)
     for (int i = 0; i < n; ++i)
     {
         float x = xmin + i * step;
-        m_vertices.push_back({ x, f(x) });
+        m_vertices.push_back({ origin.x + x, origin.y + f(x) });
     }
 }
 
