@@ -10,7 +10,13 @@
 
 void Graph::OnInitialize()
 {
-    InitHeart();
+    //InitDiamond();
+    //InitHeart();
+    InitEllipse();
+
+    //Zoom
+    m_pView = GameManager::Get()->GetView();
+    m_windowSize = m_pView->getSize();
 }
 
 void Graph::OnEvent(const sf::Event& event)
@@ -26,6 +32,19 @@ void Graph::OnEvent(const sf::Event& event)
         if (event.mouseButton.button == sf::Mouse::Left)
             m_isMousePressed = false;
     }
+
+    //test zoom
+    if (event.type == sf::Event::MouseWheelScrolled)
+    {
+        m_currentZoom += event.mouseWheelScroll.delta * -0.1f;
+
+        if (m_currentZoom <= 0.f)
+        {
+            m_currentZoom = 0.1f;
+        }
+
+        m_pView->setSize(m_windowSize * m_currentZoom);
+    }
 }
 
 void Graph::OnUpdate()
@@ -39,11 +58,16 @@ void Graph::OnUpdate()
     }
 }
 
+void Graph::DrawVertex(vertex& vertex)
+{
+    Debug::DrawCircle(vertex.x * TILE_SIZE, vertex.y * TILE_SIZE * -1.f, 5.f, sf::Color::Blue); //-1 because of the inversion with sfml
+}
+
 void Graph::DrawGraph()
 {
     Debug::DrawLine(m_minX * TILE_SIZE, 0.0f, m_maxX * TILE_SIZE, 0.0f, sf::Color::White);
     Debug::DrawLine(0.0f, m_minY * TILE_SIZE, 0.0f, m_maxY * TILE_SIZE, sf::Color::White);
-
+    
     float tempX = m_minX;
     while (tempX <= m_maxX)
     {
@@ -79,13 +103,15 @@ void Graph::HandleMouseMovement()
     sf::Vector2f mouseDelta = {(float)(m_lastMousePos.x - m_mousePos.x), -(float)(m_lastMousePos.y - m_mousePos.y)};
     mouseDelta *= m_movementSpeed * GameManager::Get()->GetDeltaTime();
 
-    GameManager::Get()->GetView()->move(mouseDelta.x, -mouseDelta.y);
+    m_pView->move(mouseDelta.x, -mouseDelta.y);
 }
 
 void Graph::InitDiamond()
 {
+    sf::Vector2f origin = sf::Vector2f(2.5f, 0.5f);
+
     Curve curve;
-    curve.origin = sf::Vector2f(2.5f, 0.5f);
+    curve.origin = origin;
     Hermite hermite;
     hermite.v1 = sf::Vector2f(-2.0f, 3.0f);
     hermite.fp1 = 0.3f;
@@ -95,7 +121,7 @@ void Graph::InitDiamond()
     vCurves.push_back(curve);
 
     Curve curve2;
-    curve2.origin = sf::Vector2f(2.5f, 0.5f);
+    curve2.origin = origin;
     Hermite hermite2;
     hermite2.v1 = sf::Vector2f(0.0f, 6.0f);
     hermite2.fp1 = -2.0f;
@@ -105,7 +131,7 @@ void Graph::InitDiamond()
     vCurves.push_back(curve2);
 
     Curve curve3;
-    curve3.origin = sf::Vector2f(2.5f, 0.5f);
+    curve3.origin = origin;
     Hermite hermite3;
     hermite3.v1 = sf::Vector2f(-2.0f, 3.0f);
     hermite3.fp1 = -0.3f;
@@ -115,7 +141,7 @@ void Graph::InitDiamond()
     vCurves.push_back(curve3);
 
     Curve curve4;
-    curve4.origin = sf::Vector2f(2.5f, 0.5f);
+    curve4.origin = origin;
     Hermite hermite4;
     hermite4.v1 = sf::Vector2f(0.0f, 0.0f);
     hermite4.fp1 = 2.0f;
@@ -148,13 +174,40 @@ void Graph::InitHeart()
     vCurves.push_back(curve1);
 
     Curve curve2;
-    Hermite hermite2;
-    hermite2.v1 = sf::Vector2f(-1.0f - Utils::Sqrt(2), 4.0f);
-    hermite2.fp1 = -2.0f;
-    hermite2.v2 = sf::Vector2f(0.0f, 0.0f);
-    hermite2.fp2 = -0.9f;
-    curve2.CalculateCurve(-1.0f - Utils::Sqrt(2), 0.0f, 50, hermite2);
+    Hermite hermite1;
+    hermite1.v1 = sf::Vector2f(-1.0f - Utils::Sqrt(2), 4.0f);
+    hermite1.fp1 = -2.0f;
+    hermite1.v2 = sf::Vector2f(0.0f, 0.0f);
+    hermite1.fp2 = -0.9f;
+    curve2.CalculateCurve(-1.0f - Utils::Sqrt(2), 0.0f, 50, hermite1);
     vCurves.push_back(curve2);
+
+    Curve curve3;
+    Hermite hermite2;
+    hermite2.v1 = sf::Vector2f(1.0f + Utils::Sqrt(2), 4.0f);
+    hermite2.fp1 = 2.0f;
+    hermite2.v2 = sf::Vector2f(0.0f, 0.0f);
+    hermite2.fp2 = 0.9f;
+    curve3.CalculateCurve(1.0f + Utils::Sqrt(2), 0.0f, 50, hermite2);
+    vCurves.push_back(curve3);
+}
+
+void Graph::InitEllipse()
+{
+    Ellipse ellipse;
+    ellipse.a = 5.f;
+    ellipse.b = 2.f;
+    ellipse.origin = { 0.f, 2.f };
+
+    Curve curve;
+    curve.CalculateShape(ellipse);
+
+    vCurves.push_back(curve);
+}
+
+void Graph::InitSpade()
+{
+
 }
 
 

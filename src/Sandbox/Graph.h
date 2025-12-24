@@ -31,12 +31,21 @@ private:
     sf::Vector2i m_lastMousePos;
     bool m_isMousePressed = false;
     float m_movementSpeed = 70.0f;
+
+    //Zoom
+    sf::Vector2f m_windowSize;
+    float m_currentZoom = 1.f;
+
+    sf::View* m_pView = nullptr;
     
     void DrawGraph();
+    void DrawVertex(vertex& vertex);
     void HandleMouseMovement();
 
     void InitDiamond();
     void InitHeart();
+    void InitEllipse();
+    void InitSpade();
 };
 
 #endif
