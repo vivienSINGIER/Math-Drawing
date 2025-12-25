@@ -14,6 +14,7 @@ void Graph::OnInitialize()
     //InitHeart();
     //InitEllipse();
     InitSpade();
+    //InitClover();
 
     //InitBezier();
     
@@ -233,48 +234,62 @@ void Graph::InitSpade()
     vCurves.push_back(curve2);
 
     Curve curve3;
+    curve3.origin = offset;
     BezierCurve bezierCurve1;
     bezierCurve1.controlPoints = {
         {-0.5f, 0.f},
         {-0.40f, 0.5f},
         {-0.26f, 1.32f}
     };
-    bezierCurve1 += offset;
     curve3.CalculateShape(bezierCurve1);
     vCurves.push_back(curve3);
 
     Curve curve4;
+    curve4.origin = offset;
     BezierCurve bezierCurve2;
     bezierCurve2.controlPoints = {
         {0.5f, 0.f},
         {0.40f, 0.5f},
         {0.26f, 1.32f}
     };
-    bezierCurve2 += offset;
     curve4.CalculateShape(bezierCurve2);
     vCurves.push_back(curve4);
 
     Curve curve5;
+    curve5.origin = offset;
     BezierCurve bezierCurve3;
     bezierCurve3.controlPoints = {
         {-1.71f, 2.71f},
         {-0.1f, 4.5f},
         {0.f, 5.f}
     };
-    bezierCurve3 += offset;
     curve5.CalculateShape(bezierCurve3);
     vCurves.push_back(curve5);
 
     Curve curve6;
+    curve6.origin = offset;
     BezierCurve bezierCurve4;
     bezierCurve4.controlPoints = {
         {1.71f, 2.71f},
         {0.1f, 4.5f},
         {0.f, 5.f}
     };
-    bezierCurve4 += offset;
     curve6.CalculateShape(bezierCurve4);
     vCurves.push_back(curve6);
+}
+
+void Graph::InitClover()
+{
+    sf::Vector2f offset = sf::Vector2f(5.f, 3.f);
+
+    Curve curveBase;
+    Hermite hermiteBase;
+    hermiteBase.v1 = sf::Vector2f(-1.f, 0.f) + offset;
+    hermiteBase.fp1 = 0.f;
+    hermiteBase.v2 = sf::Vector2f(1.f, 0.f) + offset;
+    hermiteBase.fp2 = 0.f;
+    curveBase.CalculateCurve(-1.f + offset.x, 1.f + offset.x, 20, hermiteBase);
+    vCurves.push_back(curveBase);
 }
 
 void Graph::InitBezier()

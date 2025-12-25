@@ -45,6 +45,7 @@ private:
     void InitHeart();
     void InitEllipse();
     void InitSpade();
+    void InitClover();
 
     void InitBezier();
 };

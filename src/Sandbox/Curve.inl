@@ -22,6 +22,12 @@ void Curve::CalculateShape(Func&& f)
     m_vertices.clear();
 
     m_vertices = f();
+
+    for (vertex& vertex : m_vertices)
+    {
+        vertex.x += origin.x;
+        vertex.y += origin.y;
+    }
 }
 
 #endif
