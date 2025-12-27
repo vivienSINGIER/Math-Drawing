@@ -15,7 +15,9 @@ public:
     
     std::vector<vertex> m_vertices;
 
-    void DrawPath(sf::Color color);
+    sf::Color color = sf::Color::Blue;
+
+    void DrawPath();
     void DrawPoints(sf::Color color, float radius);
     
     template <typename Func>

@@ -5,7 +5,7 @@
 
 #include "Debug.h"
 
-void Curve::DrawPath(sf::Color color)
+void Curve::DrawPath()
 {
     if (m_vertices.size() <= 1)
         return;

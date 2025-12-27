@@ -13,8 +13,8 @@ void Graph::OnInitialize()
     //InitDiamond();
     //InitHeart();
     //InitEllipse();
-    InitSpade();
-    //InitClover();
+    //InitSpade();
+    InitClover();
 
     //InitBezier();
     
@@ -58,7 +58,7 @@ void Graph::OnUpdate()
 
     for (Curve &curve : vCurves)
     {
-        curve.DrawPath(sf::Color::Blue);
+        curve.DrawPath();
     }
 }
 
@@ -100,7 +100,7 @@ void Graph::HandleMouseMovement()
     if (m_isMousePressed == false) return;
 
     sf::Vector2f mouseDelta = {(float)(m_lastMousePos.x - m_mousePos.x), -(float)(m_lastMousePos.y - m_mousePos.y)};
-    mouseDelta *= m_movementSpeed * GameManager::Get()->GetDeltaTime();
+    mouseDelta *= m_movementSpeed * GameManager::Get()->GetDeltaTime() * m_currentZoom;
 
     m_pView->move(mouseDelta.x, -mouseDelta.y);
 }
@@ -284,12 +284,94 @@ void Graph::InitClover()
 
     Curve curveBase;
     Hermite hermiteBase;
-    hermiteBase.v1 = sf::Vector2f(-1.f, 0.f) + offset;
+    hermiteBase.v1 = sf::Vector2f(-1.f, 0.f);
     hermiteBase.fp1 = 0.f;
-    hermiteBase.v2 = sf::Vector2f(1.f, 0.f) + offset;
+    hermiteBase.v2 = sf::Vector2f(1.f, 0.f);
     hermiteBase.fp2 = 0.f;
-    curveBase.CalculateCurve(-1.f + offset.x, 1.f + offset.x, 20, hermiteBase);
+    curveBase.origin = offset;
+    curveBase.CalculateCurve(-1.f, 1.f, 20, hermiteBase);
     vCurves.push_back(curveBase);
+
+    Curve curveHead;
+    curveHead.origin = offset;
+    ArcOfCircle arcHead;
+    arcHead.origin = sf::Vector2f(0.f, 4.25f);
+    arcHead.minAngle = - PI / 4;
+    arcHead.maxAngle = 5 * PI / 4;
+    curveHead.CalculateShape(arcHead);
+    vCurves.push_back(curveHead);
+
+    Curve curve1;
+    curve1.origin = offset;
+    ArcOfCircle arc1;
+    arc1.origin = sf::Vector2f(-1.5f, 2.5f);
+    arc1.minAngle = PI / 4;
+    arc1.maxAngle = 7 * PI / 4;
+    curve1.CalculateShape(arc1);
+    vCurves.push_back(curve1);
+
+    Curve curve2;
+    curve2.origin = offset;
+    ArcOfCircle arc2;
+    arc2.origin = sf::Vector2f(1.5f, 2.5f);
+    arc2.minAngle = - 3 * PI / 4;
+    arc2.maxAngle = 3 * PI / 4;
+    curve2.CalculateShape(arc2);
+    vCurves.push_back(curve2);
+
+    Curve curve3;
+    curve3.origin = offset;
+    BezierCurve bezier1;
+    bezier1.controlPoints = {
+        {-1.f, 0.f},
+        {-0.7f, 0.4f},
+        {-0.4f, 2.f},
+        {-0.4f, 2.f},
+        {-0.4f, 2.f},
+        {-0.8f, 1.79f}
+    };
+    curve3.CalculateShape(bezier1);
+    vCurves.push_back(curve3);
+
+    Curve curve4;
+    curve4.origin = offset;
+    BezierCurve bezier2;
+    bezier2.controlPoints = {
+        {1.f, 0.f},
+        {0.7f, 0.4f},
+        {0.4f, 2.f},
+        {0.4f, 2.f},
+        {0.4f, 2.f},
+        {0.8f, 1.79f}
+    };
+    curve4.CalculateShape(bezier2);
+    vCurves.push_back(curve4);
+
+    Curve curve5;
+    curve5.origin = offset;
+    BezierCurve bezier3;
+    bezier3.controlPoints = {
+        {-0.8f, 3.21f},
+        {-0.45f, 3.f},
+        {-0.45f, 3.f},
+        {-0.45f, 3.f},
+        {-0.71f, 3.55f}
+    };
+    curve5.CalculateShape(bezier3);
+    vCurves.push_back(curve5);
+
+    Curve curve6;
+    curve6.origin = offset;
+    BezierCurve bezier4;
+    bezier4.controlPoints = {
+        {0.8f, 3.21f},
+        {0.45f, 3.f},
+        {0.45f, 3.f},
+        {0.45f, 3.f},
+        {0.71f, 3.55f}
+    };
+    curve6.CalculateShape(bezier4);
+    vCurves.push_back(curve6);
 }
 
 void Graph::InitBezier()
