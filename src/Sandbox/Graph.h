@@ -4,6 +4,8 @@
 #include "Curve.h"
 #include "Scene.h"
 
+class TextEntered;
+
 class Graph : public Scene
 {
 public:
@@ -37,8 +39,11 @@ private:
     float m_currentZoom = 1.f;
 
     sf::View* m_pView = nullptr;
+
+    std::vector<TextEntered*> vTextEntered;
     
     void DrawGraph();
+    void DrawInterface();
     void HandleMouseMovement();
 
     void InitDiamond();
@@ -46,6 +51,8 @@ private:
     void InitEllipse();
     void InitSpade();
     void InitClover();
+
+    void TraceCourbe(std::vector<vertex> points, bool isMiror = false); //only bezier type for the moment
 
     void InitBezier();
 };

@@ -56,6 +56,7 @@ public:
     Scene* GetScene() const { return mpScene; }
     sf::Font& GetFont() { return mFont; };
     sf::View* GetView() const { return mpView; }
+    sf::Vector2i GetWindowSize() const { return { mWindowWidth, mWindowHeight }; }
 
     friend Debug;
     friend Scene;

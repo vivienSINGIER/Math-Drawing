@@ -7,6 +7,9 @@
 #include "Debug.h"
 #include "Utils.h"
 #include "MathFunctions.hpp"
+#include "TextEntered.h"
+
+#include <iostream>
 
 void Graph::OnInitialize()
 {
@@ -14,13 +17,27 @@ void Graph::OnInitialize()
     //InitHeart();
     //InitEllipse();
     //InitSpade();
-    InitClover();
+    //InitClover();
 
     //InitBezier();
     
     //Zoom
     m_pView = GameManager::Get()->GetView();
     m_windowSize = m_pView->getSize();
+
+    //Test trace courbe
+    std::vector<vertex> test = {
+        {2.0f, 17.0f},
+        {6.6f, 1.8f},
+        {61.0f, 7.4f},
+        {12.0f, 37.0f},
+        {62.0f, 17.0f}
+    };
+
+    TraceCourbe(test, true);
+
+    TextEntered* text = new TextEntered();
+    vTextEntered.push_back(text);
 }
 
 void Graph::OnEvent(const sf::Event& event)
@@ -55,6 +72,7 @@ void Graph::OnUpdate()
 {
     HandleMouseMovement();
     DrawGraph();
+    DrawInterface();
 
     for (Curve &curve : vCurves)
     {
@@ -90,6 +108,15 @@ void Graph::DrawGraph()
             Debug::DrawText(-35.f, tempY * TILE_SIZE - 2.5f, std::to_string((int)-tempY), sf::Color::Green);
         tempY += m_interval_Y;
     }
+}
+
+void Graph::DrawInterface()
+{
+    //assume that every curve in vCurve can be update
+    //Debug::DrawText(- m_windowSize.x / 2 + m_pView->getCenter().x, - m_windowSize.y / 2 + m_pView->getCenter().y, "test", sf::Color::White);
+    Debug::DrawStaticText({0.f, 0.f}, "Create bezier curve", {2.f, 2.f}, sf::Color::White);
+
+    Debug::DrawStaticText({0.f, 0.f}, "", {2.f, 2.f}, sf::Color::White);
 }
 
 void Graph::HandleMouseMovement()
@@ -388,6 +415,33 @@ void Graph::InitBezier()
     Curve curve;
     curve.CalculateShape(bezierCurve);
     vCurves.push_back(curve);
+}
+
+void Graph::TraceCourbe(std::vector<vertex> points, bool isMiror)
+{
+    BezierCurve bezierCurve;
+    bezierCurve.controlPoints = points;
+
+    Curve curve;
+    curve.CalculateShape(bezierCurve);
+    vCurves.push_back(curve);
+
+    if (isMiror) // only on y = 0 and x = 0
+    {
+        std::vector<vertex> altPoints;
+
+        for (int i = 0; i < points.size(); ++i)
+        {
+            altPoints.push_back(-points[i]);
+        }
+
+        BezierCurve altBezier;
+        altBezier.controlPoints = altPoints;
+        Curve altCurve;
+        altCurve.color = sf::Color::Red;
+        altCurve.CalculateShape(altBezier);
+        vCurves.push_back(altCurve);
+    }
 }
 
 

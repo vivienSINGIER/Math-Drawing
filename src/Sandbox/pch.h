@@ -14,4 +14,13 @@ struct vertex
 {
     float x;
     float y;
+
+    vertex operator-()
+    {
+        vertex newVertex;
+        newVertex.x = -x;
+        newVertex.y = -y;
+
+        return newVertex;
+    }
 };
