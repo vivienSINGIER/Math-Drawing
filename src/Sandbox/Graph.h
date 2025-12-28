@@ -4,7 +4,11 @@
 #include "Curve.h"
 #include "Scene.h"
 
-class TextEntered;
+enum Type {
+    TypeBezier,
+    TypeHermite,
+    TypeLagrange
+};
 
 class Graph : public Scene
 {
@@ -39,8 +43,6 @@ private:
     float m_currentZoom = 1.f;
 
     sf::View* m_pView = nullptr;
-
-    std::vector<TextEntered*> vTextEntered;
     
     void DrawGraph();
     void DrawInterface();
@@ -52,7 +54,7 @@ private:
     void InitSpade();
     void InitClover();
 
-    void TraceCourbe(std::vector<vertex> points, bool isMiror = false); //only bezier type for the moment
+    void TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points = {}, bool isMiror = false);
 
     void InitBezier();
 };

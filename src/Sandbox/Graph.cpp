@@ -7,7 +7,6 @@
 #include "Debug.h"
 #include "Utils.h"
 #include "MathFunctions.hpp"
-#include "TextEntered.h"
 
 #include <iostream>
 
@@ -34,10 +33,11 @@ void Graph::OnInitialize()
         {62.0f, 17.0f}
     };
 
-    TraceCourbe(test, true);
+    //TraceCourbe(TypeBezier, test, {}, true);
 
-    TextEntered* text = new TextEntered();
-    vTextEntered.push_back(text);
+    //TraceCourbe(TypeLagrange, { {0.f, 0.f}, {5.f, 5.f} }, {}, true);
+
+    TraceCourbe(TypeHermite, { {0.f, 0.f}, {5.f, 5.f} }, { {0.f, 2.f}, {5.f, 8.f} }, true);
 }
 
 void Graph::OnEvent(const sf::Event& event)
@@ -114,9 +114,9 @@ void Graph::DrawInterface()
 {
     //assume that every curve in vCurve can be update
     //Debug::DrawText(- m_windowSize.x / 2 + m_pView->getCenter().x, - m_windowSize.y / 2 + m_pView->getCenter().y, "test", sf::Color::White);
-    Debug::DrawStaticText({0.f, 0.f}, "Create bezier curve", {2.f, 2.f}, sf::Color::White);
+    Debug::DrawStaticText({0.f, 0.f}, "Create bezier curve", {1.f, 1.f}, sf::Color::White);
 
-    Debug::DrawStaticText({0.f, 0.f}, "", {2.f, 2.f}, sf::Color::White);
+    //Debug::DrawStaticText({0.f, 0.f}, "", {2.f, 2.f}, sf::Color::White);
 }
 
 void Graph::HandleMouseMovement()
@@ -417,13 +417,77 @@ void Graph::InitBezier()
     vCurves.push_back(curve);
 }
 
-void Graph::TraceCourbe(std::vector<vertex> points, bool isMiror)
+void Graph::TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points, bool isMiror)
 {
-    BezierCurve bezierCurve;
-    bezierCurve.controlPoints = points;
-
     Curve curve;
-    curve.CalculateShape(bezierCurve);
+    switch (type)
+    {
+    case TypeBezier:
+    {
+        BezierCurve bezierCurve;
+        bezierCurve.controlPoints = points;
+
+        curve.CalculateShape(bezierCurve);
+        break;
+    }
+    case TypeLagrange:
+    {
+        Lagrange lagrange;
+        
+        std::vector<float> x;
+        std::vector<float> y;
+
+        float minX = points[0].x;
+        float maxX = points[0].x;
+
+        for (vertex vertex : points)
+        {
+            x.push_back(vertex.x);
+            y.push_back(vertex.y);
+
+            if (minX > vertex.x)
+                minX = vertex.x;
+
+            else if (maxX < vertex.x)
+                maxX = vertex.x;
+        }
+
+        lagrange.xs = x;
+        lagrange.ys = y;
+
+        curve.CalculateCurve(minX, maxX, 50, lagrange);
+        break;
+    }
+    case TypeHermite:
+    {
+        if (points.size() != 2 || deriv1Points.size() != 2) return;
+
+        Hermite hermite;
+
+        hermite.v1.x = points[0].x;
+        hermite.v1.y = points[0].y;
+        hermite.fp1 = deriv1Points[0].y;
+
+        hermite.v2.x = points[1].x;
+        hermite.v2.y = points[1].y;
+        hermite.fp2 = deriv1Points[1].y;
+
+        float minX = hermite.v1.x;
+        float maxX = hermite.v2.x;
+
+        if (minX > maxX)
+        {
+            float temp = minX;
+            minX = maxX;
+            maxX = temp;
+        }
+
+        curve.CalculateCurve(minX, maxX, 50, hermite);
+        break;
+    }
+    }
+
+    
     vCurves.push_back(curve);
 
     if (isMiror) // only on y = 0 and x = 0
@@ -435,12 +499,7 @@ void Graph::TraceCourbe(std::vector<vertex> points, bool isMiror)
             altPoints.push_back(-points[i]);
         }
 
-        BezierCurve altBezier;
-        altBezier.controlPoints = altPoints;
-        Curve altCurve;
-        altCurve.color = sf::Color::Red;
-        altCurve.CalculateShape(altBezier);
-        vCurves.push_back(altCurve);
+        TraceCourbe(type, altPoints, deriv1Points);
     }
 }
 
