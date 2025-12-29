@@ -9,6 +9,7 @@ enum CreationStep {
 	SelectType,
 	SelectNumberOfPoints,
 	CreatePoints,
+	CreateDerivPoints
 };
 
 struct ConvertKeyCode
@@ -125,6 +126,7 @@ private:
 
 	int numPoints = 0;
 	std::vector<vertex> points;
+	std::vector<vertex> derivPoints;
 	int currentPos = 0;
 	bool setX = true;
 
@@ -134,6 +136,7 @@ private:
 	void SelectParameters(Type type);
 	void SelectNumberOfPoint(const sf::Event& event);
 	void CreatePoint(const sf::Event& event);
+	void CreateDerivPoint(const sf::Event& event);
 };
 
 

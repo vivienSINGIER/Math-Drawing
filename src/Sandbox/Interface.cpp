@@ -42,6 +42,11 @@ void Interface::OnEvent(const sf::Event& event)
         {
             CreatePoint(event);
         }
+
+        else if (currentStep == CreateDerivPoints)
+        {
+            CreateDerivPoint(event);
+        }
     }
 }
 
@@ -63,9 +68,16 @@ void Interface::SelectParameters(Type type)
     {
         system("cls");
 
-        std::cout << "Select the number of point" << std::endl;
+        std::cout << "Select X for point 1" << std::endl;
 
-        currentStep = SelectNumberOfPoints;
+        currentStep = CreatePoints;
+
+        numPoints = 2;
+
+        for (int i = 0; i < numPoints; i++)
+        {
+            points.push_back({ 0.f, 0.f });
+        }
 
         break;
     }
@@ -130,8 +142,8 @@ void Interface::CreatePoint(const sf::Event& event)
         else
         {
             points[currentPos].y = temp;
-            std::cout << "Select X for point " << currentPos + 1 << std::endl;
             currentPos++;
+            std::cout << "Select X for point " << currentPos + 1 << std::endl;
 
             if (currentPos == numPoints)
             {
@@ -139,12 +151,50 @@ void Interface::CreatePoint(const sf::Event& event)
                 currentPos = 0;
 
                 if (currentType == TypeBezier || currentType == TypeLagrange)
+                {
                     currentStep = NotStart;
-                m_pGraph->TraceCourbe(currentType, points);
+                    m_pGraph->TraceCourbe(currentType, points);
+                }
+                else
+                {
+                    currentStep = CreateDerivPoints;
+                    std::cout << "Now the deriv point" << std::endl;
+                    std::cout << "Select Y for point 1" << std::endl;
+                }
+                
             }
         }
 
         setX = !setX;
+    }
+    else
+    {
+        currentValue += ConvertKeyCode::Convert(event.key);
+    }
+}
+
+void Interface::CreateDerivPoint(const sf::Event& event)
+{
+    if (event.key.code == sf::Keyboard::Enter)
+    {
+        float temp = std::stof(currentValue);
+        currentValue = "";
+        std::cout << std::endl;
+
+        derivPoints.push_back({points[currentPos].x,temp});
+
+        std::cout << "Select Y for point " << currentPos + 1 << std::endl;
+
+        currentPos++;
+
+        if (derivPoints.size() == numPoints)
+        {
+            system("cls");
+            currentPos = 0;
+
+            currentStep = NotStart;
+            m_pGraph->TraceCourbe(currentType, points, derivPoints);
+        }
     }
     else
     {
