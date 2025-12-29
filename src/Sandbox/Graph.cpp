@@ -25,23 +25,8 @@ void Graph::OnInitialize()
     m_pView = GameManager::Get()->GetView();
     m_windowSize = m_pView->getSize();
 
-    //Test trace courbe
-    std::vector<vertex> test = {
-        {2.0f, 17.0f},
-        {6.6f, 1.8f},
-        {61.0f, 7.4f},
-        {12.0f, 37.0f},
-        {62.0f, 17.0f}
-    };
-
     m_pInterface = new Interface;
     m_pInterface->m_pGraph = this;
-
-    //TraceCourbe(TypeBezier, test, {}, true);
-
-    //TraceCourbe(TypeLagrange, { {0.f, 0.f}, {5.f, 5.f} }, {}, true);
-
-    //TraceCourbe(TypeHermite, { {0.f, 0.f}, {5.f, 5.f} }, { {0.f, 2.f}, {5.f, 8.f} }, true);
 }
 
 void Graph::OnEvent(const sf::Event& event)
@@ -414,7 +399,7 @@ void Graph::InitBezier()
     vCurves.push_back(curve);
 }
 
-void Graph::TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points, bool isMiror)
+void Graph::TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points, bool isMirorO, bool isMirorX, bool isMirorY)
 {
     Curve curve;
     switch (type)
@@ -487,13 +472,37 @@ void Graph::TraceCourbe(Type type, std::vector<vertex> points, std::vector<verte
     
     vCurves.push_back(curve);
 
-    if (isMiror) // only on y = 0 and x = 0
+    if (isMirorO)
     {
         std::vector<vertex> altPoints;
 
         for (int i = 0; i < points.size(); ++i)
         {
             altPoints.push_back(-points[i]);
+        }
+
+        TraceCourbe(type, altPoints, deriv1Points);
+    }
+
+    if (isMirorX)
+    {
+        std::vector<vertex> altPoints;
+
+        for (int i = 0; i < points.size(); ++i)
+        {
+            altPoints.push_back({points[i].x, -points[i].y});
+        }
+
+        TraceCourbe(type, altPoints, deriv1Points);
+    }
+
+    if (isMirorY)
+    {
+        std::vector<vertex> altPoints;
+
+        for (int i = 0; i < points.size(); ++i)
+        {
+            altPoints.push_back({-points[i].x, points[i].y});
         }
 
         TraceCourbe(type, altPoints, deriv1Points);

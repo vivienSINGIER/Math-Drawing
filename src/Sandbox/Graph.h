@@ -18,7 +18,7 @@ public:
     Graph() = default;
     ~Graph() = default;
 
-    void TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points = {}, bool isMiror = false);
+    void TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points = {}, bool isMirorO = false, bool isMirorX = false, bool isMirorY = false);
     
 protected:
     void OnInitialize();

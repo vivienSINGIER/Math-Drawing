@@ -6,7 +6,7 @@
 
 void Interface::Update()
 {
-
+    
 }
 
 void Interface::OnEvent(const sf::Event& event)
@@ -46,6 +46,11 @@ void Interface::OnEvent(const sf::Event& event)
         else if (currentStep == CreateDerivPoints)
         {
             CreateDerivPoint(event);
+        }
+
+        else if (currentStep == SelectMirors)
+        {
+            SelectMiror(event);
         }
     }
 }
@@ -152,8 +157,9 @@ void Interface::CreatePoint(const sf::Event& event)
 
                 if (currentType == TypeBezier || currentType == TypeLagrange)
                 {
-                    currentStep = NotStart;
-                    m_pGraph->TraceCourbe(currentType, points);
+                    currentStep = SelectMirors;
+                    std::cout << "Select if you want a miror version from the origin (0 : no, 1 : yes), from X and from Y (all atttach)" << std::endl;
+                    //m_pGraph->TraceCourbe(currentType, points);
                 }
                 else
                 {
@@ -191,10 +197,50 @@ void Interface::CreateDerivPoint(const sf::Event& event)
         {
             system("cls");
             currentPos = 0;
-
-            currentStep = NotStart;
-            m_pGraph->TraceCourbe(currentType, points, derivPoints);
+            std::cout << "Select if you want a miror version from the origin (0 : no, 1 : yes), from X and from Y (all atttach)" << std::endl;
+            currentStep = SelectMirors;
+            //m_pGraph->TraceCourbe(currentType, points, derivPoints);
         }
+    }
+    else
+    {
+        currentValue += ConvertKeyCode::Convert(event.key);
+    }
+}
+
+void Interface::SelectMiror(const sf::Event& event)
+{
+    /*char temp = ConvertKeyCode::Convert(event.key);
+
+    if (temp == '0' || temp == '1')
+    {
+        bool isMiror = true;
+
+        if (temp == '0')
+            isMiror = false;
+
+        system("cls");
+
+        m_pGraph->TraceCourbe(currentType, points, derivPoints, isMiror);
+    }*/
+    if (event.key.code == sf::Keyboard::Enter)
+    {
+        bool mirorO = true;
+        bool mirorX = true;
+        bool mirorY = true;
+
+        if (currentValue[0] == 0)
+            mirorO = false;
+
+        if (currentValue[1] == 0)
+            mirorX = false;
+
+        if (currentValue[2] == 0)
+            mirorY = false;
+
+        system("cls");
+
+        m_pGraph->TraceCourbe(currentType, points, derivPoints, mirorO, mirorX, mirorY);
     }
     else
     {

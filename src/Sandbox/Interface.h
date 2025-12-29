@@ -9,7 +9,8 @@ enum CreationStep {
 	SelectType,
 	SelectNumberOfPoints,
 	CreatePoints,
-	CreateDerivPoints
+	CreateDerivPoints, 
+	SelectMirors
 };
 
 struct ConvertKeyCode
@@ -137,6 +138,7 @@ private:
 	void SelectNumberOfPoint(const sf::Event& event);
 	void CreatePoint(const sf::Event& event);
 	void CreateDerivPoint(const sf::Event& event);
+	void SelectMiror(const sf::Event& event);
 };
 
 
