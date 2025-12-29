@@ -7,6 +7,7 @@
 #include "Debug.h"
 #include "Utils.h"
 #include "MathFunctions.hpp"
+#include "Interface.h"
 
 #include <iostream>
 
@@ -33,15 +34,20 @@ void Graph::OnInitialize()
         {62.0f, 17.0f}
     };
 
+    m_pInterface = new Interface;
+    m_pInterface->m_pGraph = this;
+
     //TraceCourbe(TypeBezier, test, {}, true);
 
     //TraceCourbe(TypeLagrange, { {0.f, 0.f}, {5.f, 5.f} }, {}, true);
 
-    TraceCourbe(TypeHermite, { {0.f, 0.f}, {5.f, 5.f} }, { {0.f, 2.f}, {5.f, 8.f} }, true);
+    //TraceCourbe(TypeHermite, { {0.f, 0.f}, {5.f, 5.f} }, { {0.f, 2.f}, {5.f, 8.f} }, true);
 }
 
 void Graph::OnEvent(const sf::Event& event)
 {
+    m_pInterface->OnEvent(event);
+
     if (event.type == sf::Event::MouseButtonPressed)
     {
         if (event.mouseButton.button == sf::Mouse::Left)
@@ -72,7 +78,7 @@ void Graph::OnUpdate()
 {
     HandleMouseMovement();
     DrawGraph();
-    DrawInterface();
+    m_pInterface->Update();
 
     for (Curve &curve : vCurves)
     {
@@ -108,15 +114,6 @@ void Graph::DrawGraph()
             Debug::DrawText(-35.f, tempY * TILE_SIZE - 2.5f, std::to_string((int)-tempY), sf::Color::Green);
         tempY += m_interval_Y;
     }
-}
-
-void Graph::DrawInterface()
-{
-    //assume that every curve in vCurve can be update
-    //Debug::DrawText(- m_windowSize.x / 2 + m_pView->getCenter().x, - m_windowSize.y / 2 + m_pView->getCenter().y, "test", sf::Color::White);
-    Debug::DrawStaticText({0.f, 0.f}, "Create bezier curve", {1.f, 1.f}, sf::Color::White);
-
-    //Debug::DrawStaticText({0.f, 0.f}, "", {2.f, 2.f}, sf::Color::White);
 }
 
 void Graph::HandleMouseMovement()

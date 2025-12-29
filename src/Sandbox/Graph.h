@@ -4,6 +4,8 @@
 #include "Curve.h"
 #include "Scene.h"
 
+class Interface;
+
 enum Type {
     TypeBezier,
     TypeHermite,
@@ -16,7 +18,7 @@ public:
     Graph() = default;
     ~Graph() = default;
 
-    std::vector<Curve> vCurves;
+    void TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points = {}, bool isMiror = false);
     
 protected:
     void OnInitialize();
@@ -24,6 +26,8 @@ protected:
     void OnUpdate();
 
 private:
+    std::vector<Curve> vCurves;
+
     float m_maxX = 100.0f;
     float m_maxY = 100.0f;
     float m_minX = -100.0f;
@@ -43,9 +47,10 @@ private:
     float m_currentZoom = 1.f;
 
     sf::View* m_pView = nullptr;
+
+    Interface* m_pInterface = nullptr;
     
     void DrawGraph();
-    void DrawInterface();
     void HandleMouseMovement();
 
     void InitDiamond();
@@ -53,8 +58,6 @@ private:
     void InitEllipse();
     void InitSpade();
     void InitClover();
-
-    void TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points = {}, bool isMiror = false);
 
     void InitBezier();
 };
