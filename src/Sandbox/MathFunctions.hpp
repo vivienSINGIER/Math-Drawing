@@ -3,45 +3,179 @@
 #define MATH_FUNCTIONS_HPP_DEFINED
 
 #include <vector>
+
+#include "Debug.h"
 #include "Utils.h"
+
+enum FunctionType
+{
+    LINEAR,
+    PARABOLA,
+    LAGRANGE,
+    HERMITE,
+    BEZIER,
+    ELLIPSE,
+    ARC_CIRCLE
+};
 
 struct MathFunction
 {
-    virtual float operator()(float x) const
+    ~MathFunction()
     {
-        return x;
+        for (vertex* v : controlPoints)
+        {
+            delete v;
+        }
+    }
+    
+    std::vector<vertex*> controlPoints;
+    int controlPointLimit = -1;
+    
+    virtual void Update() {}
+    virtual void OnDrawPoints() {}
+    virtual std::vector<vertex> operator()()
+    {
+        return std::vector<vertex>();
+    }
+
+    vertex* HandleSelection( float x, float y )
+    {
+        for (vertex* v : controlPoints)
+        {
+            if (v->Contains(x, y))
+                return v;
+        }
+        return nullptr;
+    }
+    virtual void SetVertexPosition( vertex* v, float x, float y )
+    {
+        v->x = x;
+        v->y = y;
+    }
+};
+
+struct Linear : public MathFunction
+{
+    Linear()
+    {
+        controlPoints.push_back(new vertex(0.f, 0.f));
+        controlPoints.push_back(new vertex(1.f, 1.f));
+    }
+    
+    std::vector<vertex> operator()() override
+    {
+        std::vector<vertex> result;
+        if (controlPoints.size() <= 1) return result;
+        
+        for (int i = 0; i < controlPoints.size(); i++)
+            result.push_back(*controlPoints[i]);
+
+        return result;
     }
 };
 
 struct Parabola : public MathFunction
 {
-    float operator()(float x) const override
+
+    int n = 50;
+    
+    Parabola()
     {
-        return Utils::Pow(x, 2);
+        controlPointLimit = 2;
+        controlPoints.push_back(new vertex(0.f, 0.f));
+        controlPoints.push_back(new vertex(1.f, 1.f));
+    }
+    
+    std::vector<vertex> operator()() override
+    {
+        std::vector<vertex> result;
+        if (controlPoints.size() <= 1) return result;
+
+        float x0 = controlPoints[0]->x;
+        float y0 = controlPoints[0]->y;
+        float x1 = controlPoints[1]->x;
+        float y1 = controlPoints[1]->y;
+
+        float dx = x1 - x0;
+        if (dx == 0.f) return result;
+        
+        float c = (y1 - y0) / (dx * dx);
+
+        float start = -Utils::Abs(dx);
+        float step = (Utils::Abs(dx) * 2.f) / n;
+
+        for (int i = 0; i <= n; i++)
+        {
+            float x = x0 + start;
+            float y = y0 + c * start * start;
+            result.emplace_back(x, y);
+            start += step;
+        }
+
+        return result;
     }
 };
 
 struct Lagrange : public MathFunction
 {
-    std::vector<float> xs;
-    std::vector<float> ys;
+    int n = 50;
     
-    float operator()(float x) const override
+    Lagrange()
     {
-        float result = 0.0f;
+        controlPoints.push_back(new vertex(0.f, 0.f));
+        controlPoints.push_back(new vertex(0.8f, 0.5f));
+        controlPoints.push_back(new vertex(1.f, 1.f));
+    }
 
-        for (int i = 0; i < xs.size(); i++)
+    void SortControlPoints()
+    {
+        if (controlPoints.size() <= 1) return;
+        
+        for (int i = 0; i < controlPoints.size() - 1; i++)
         {
-            float numerator = 1.0f;
-            float denominator = 1.0f;
-            for (int j = 0; j < ys.size(); j++)
+            for (int j = i + 1; j < controlPoints.size(); j++)
             {
-                if ( j == i ) continue;
-                
-                numerator *= x - xs[j];
-                denominator *= xs[i] - xs[j];
+                if (controlPoints[i]->x > controlPoints[j]->x)
+                {
+                    vertex* temp = controlPoints[i];
+                    controlPoints[i] = controlPoints[j];
+                    controlPoints[j] = temp;
+                }
             }
-            result += ys[i] * numerator / denominator;
+        }
+    }
+    
+    std::vector<vertex> operator()() override
+    {
+        std::vector<vertex> result;
+        if (controlPoints.size() <= 1) return result;
+
+        SortControlPoints();
+        
+        float start = controlPoints[0]->x;
+        float end = controlPoints.back()->x;
+        float distance = end - start;
+        float step = Utils::Abs(distance) / n;
+        
+        for (int k = 0; k <= n; k++)
+        {
+            float yResult = 0.0f;
+
+            for (int i = 0; i < controlPoints.size(); i++)
+            {
+                float numerator = 1.0f;
+                float denominator = 1.0f;
+                for (int j = 0; j < controlPoints.size(); j++)
+                {
+                    if ( j == i ) continue;
+                
+                    numerator *= start - controlPoints[j]->x;
+                    denominator *= controlPoints[i]->x - controlPoints[j]->x;
+                }
+                yResult += controlPoints[i]->y * numerator / denominator;
+            }
+            result.push_back(vertex(start, yResult));
+            start += step;
         }
 
         return result;
@@ -50,58 +184,160 @@ struct Lagrange : public MathFunction
 
 struct Hermite : public MathFunction
 {
-    sf::Vector2f v1;
-    float fp1;
+    int n = 50;
     
-    sf::Vector2f v2;
-    float fp2;
-    
-    float operator()(float x) const override
+    Hermite()
     {
-        float h   = v2.x - v1.x;
-        float f1  = v1.y;
-        float f2  = v2.y;
-        float x1  = v1.x;
+        controlPointLimit = 4;
+        
+        controlPoints.push_back(new vertex(0.f, 0.f));
+        controlPoints.push_back(new vertex(1.f, 1.f));
 
-        float a = 2 * (f1 - f2) / Utils::Pow(h, 3) + (fp1 + fp2) / Utils::Pow(h, 2);
-        a *= Utils::Pow(x, 3);
+        controlPoints.push_back(new vertex(0.5f, 0.f));
+        controlPoints.push_back(new vertex(1.0f, 0.5f));
+    }
 
-        float b = -6 * x1 * (f1 - f2) / Utils::Pow(h, 3);
-        b += (-3 * (f1 - f2) - 3 * x1 * (fp1 + fp2)) / Utils::Pow(h, 2);
-        b += (-2 * fp1 - fp2) / h;
-        b *= Utils::Pow(x, 2);
+    void OnDrawPoints() override
+    {
+        if (controlPoints.size() != 4) return;
+        
+        Debug::DrawLine(controlPoints[0]->x * TILE_SIZE,
+            -controlPoints[0]->y * TILE_SIZE,
+            controlPoints[2]->x * TILE_SIZE,
+            -controlPoints[2]->y * TILE_SIZE, sf::Color::White);
 
-        float c = 6 * Utils::Pow(x1, 2) * (f1 - f2) / Utils::Pow(h, 3);
-        c += (x1 * (6 * (f1 - f2) + 3 * x1 * (fp1 + fp2))) / Utils::Pow(h, 2);
-        c += x1 * (4 * fp1 + 2 * fp2) / h;
-        c += fp1;
-        c *= x;
+        Debug::DrawLine(controlPoints[1]->x * TILE_SIZE,
+            -controlPoints[1]->y * TILE_SIZE,
+            controlPoints[3]->x * TILE_SIZE,
+            -controlPoints[3]->y * TILE_SIZE, sf::Color::White);
+    }
 
-        float d = -2 * Utils::Pow(x1, 3) * (f1 - f2) / Utils::Pow(h, 3);
-        d += Utils::Pow(x1, 2) * (-3 * (f1 - f2) - x1 * (fp1 + fp2)) / Utils::Pow(h, 2);
-        d += Utils::Pow(x1, 2) * (-2 * fp1 - fp2) / h;
-        d += f1;
-        d -= x1 * fp1;
+    void SortControlPoints()
+    {
+        if (controlPoints.size() != 4) return;
 
-        float result = a + b + c + d;
+        if (controlPoints[0]->x > controlPoints[2]->x)
+        {
+            vertex* temp = controlPoints[0];
+            controlPoints[0] = controlPoints[2];
+            controlPoints[2] = temp;
+
+            temp = controlPoints[1];
+            controlPoints[1] = controlPoints[3];
+            controlPoints[3] = temp;
+        }
+    }
+
+    void SetVertexPosition(vertex* v, float x, float y) override
+    {
+        if (controlPoints.size() != 4) return;
+        
+        if (v == controlPoints[0])
+        {
+            float xDistance = controlPoints[2]->x - controlPoints[0]->x;
+            float yDistance = controlPoints[2]->y - controlPoints[0]->y;
+
+            v->x = x;
+            v->y = y;
+            controlPoints[2]->x = x + xDistance;
+            controlPoints[2]->y = y + yDistance;
+        }
+
+        else if (v == controlPoints[1])
+        {
+            float xDistance = controlPoints[3]->x - controlPoints[1]->x;
+            float yDistance = controlPoints[3]->y - controlPoints[1]->y;
+
+            v->x = x;
+            v->y = y;
+            controlPoints[3]->x = x + xDistance;
+            controlPoints[3]->y = y + yDistance;
+        }
+        else
+        {
+            v->x = x;
+            v->y = y;
+        }
+    }
+    
+    std::vector<vertex> operator()() override
+    {
+        std::vector<vertex> result;
+        if (controlPoints.size() != 4) return result;
+
+        SortControlPoints();
+        
+        float start = controlPoints[0]->x;
+        float end = controlPoints[1]->x;
+        float distance = end - start;
+        float step = Utils::Abs(distance) / n;
+
+        vertex v1 = *controlPoints[0];
+        vertex v2 = *controlPoints[1];
+
+        sf::Vector2f vfp1 = {controlPoints[2]->x - v1.x, controlPoints[2]->y - v1.y};
+        float fp1 = 0.0f;
+        if (vfp1.x == 0.0f)
+            fp1 = 500.0f;            
+        else
+            fp1 = vfp1.y / vfp1.x;
+
+        sf::Vector2f vfp2 = {controlPoints[3]->x - v2.x, controlPoints[3]->y - v2.y};
+        float fp2 = 0.0f;
+        if (vfp2.x == 0.0f)
+            fp2 = 500.0f;
+        else
+            fp2 = vfp2.y / vfp2.x;
+        
+        for (int k = 0; k <= n; k++)
+        {
+            float h   = v2.x - v1.x;
+            float f1  = v1.y;
+            float f2  = v2.y;
+            float x1  = v1.x;
+
+            float a = 2 * (f1 - f2) / Utils::Pow(h, 3) + (fp1 + fp2) / Utils::Pow(h, 2);
+            a *= Utils::Pow(start, 3);
+
+            float b = -6 * x1 * (f1 - f2) / Utils::Pow(h, 3);
+            b += (-3 * (f1 - f2) - 3 * x1 * (fp1 + fp2)) / Utils::Pow(h, 2);
+            b += (-2 * fp1 - fp2) / h;
+            b *= Utils::Pow(start, 2);
+
+            float c = 6 * Utils::Pow(x1, 2) * (f1 - f2) / Utils::Pow(h, 3);
+            c += (x1 * (6 * (f1 - f2) + 3 * x1 * (fp1 + fp2))) / Utils::Pow(h, 2);
+            c += x1 * (4 * fp1 + 2 * fp2) / h;
+            c += fp1;
+            c *= start;
+
+            float d = -2 * Utils::Pow(x1, 3) * (f1 - f2) / Utils::Pow(h, 3);
+            d += Utils::Pow(x1, 2) * (-3 * (f1 - f2) - x1 * (fp1 + fp2)) / Utils::Pow(h, 2);
+            d += Utils::Pow(x1, 2) * (-2 * fp1 - fp2) / h;
+            d += f1;
+            d -= x1 * fp1;
+
+            float yResult = a + b + c + d;
+            result.push_back(vertex(start, yResult));
+            start += step;
+        }
+
         return result;
     }
 };
 
-struct MathShape
-{
-    virtual std::vector<vertex> operator()() const
-    {
-        return std::vector<vertex>();
-    }
-};
-
-struct BezierCurve : public MathShape
+struct BezierCurve : public MathFunction
 {
     int steps = 50;
-    std::vector<vertex> controlPoints;
 
-    std::vector<vertex> operator()() const override
+    BezierCurve()
+    {
+        controlPoints.push_back(new vertex(0.f, 0.f));
+        controlPoints.push_back(new vertex(1.5f, 3.5f));
+        controlPoints.push_back(new vertex(2.5f, 3.5f));
+        controlPoints.push_back(new vertex(5.f, 5.f));
+    }
+    
+    std::vector<vertex> operator()() override
     {
         std::vector<vertex> result;
         
@@ -112,7 +348,13 @@ struct BezierCurve : public MathShape
         {
             vertex v = {0.0f, 0.0f};
 
-            std::vector<vertex> temp = controlPoints;
+            std::vector<vertex> temp;
+
+            for (int i = 0; i < controlPoints.size(); i++)
+            {
+                temp.push_back(*controlPoints[i]);
+            }
+            
             for (int k = 1; k < controlPoints.size(); k++)
             {
                 for (int i = 0; i < temp.size() - k; i++)
@@ -128,18 +370,50 @@ struct BezierCurve : public MathShape
     }
 };
 
-struct Ellipse : public MathShape
+struct Ellipse : public MathFunction
 {
     int n = 50;
-    
-    float a = 1.0f;
-    float b = 1.0f;
 
-    sf::Vector2f origin = sf::Vector2f(0, 0);
+    Ellipse()
+    {
+        controlPointLimit = 3;
+        controlPoints.push_back(new vertex(0.f, 0.f));
+        controlPoints.push_back(new vertex(5.0f, 0.0f));
+        controlPoints.push_back(new vertex(0.0f, 5.0f));
+    }
+
+    void SetVertexPosition(vertex* v, float x, float y) override
+    {
+        if (controlPoints.size() != 3) return;
+        
+        if (v == controlPoints[0])
+        {
+            float xDist = controlPoints[1]->x - controlPoints[0]->x;
+            float yDist = controlPoints[2]->y - controlPoints[0]->y;
+
+            v->x = x;
+            v->y = y;
+
+            controlPoints[1]->x = x + xDist;
+            controlPoints[1]->y = y;
+            controlPoints[2]->x = x;
+            controlPoints[2]->y = y + yDist;
+        }
+
+        if (v == controlPoints[1])
+            v->x = x;
+        if (v == controlPoints[2])
+            v->y = y;
+    }
     
-    std::vector<vertex> operator()() const override
+    std::vector<vertex> operator()() override
     {
         std::vector<vertex> result;
+        if (controlPoints.size() != 3) return result;
+        
+        vertex origin = *controlPoints[0];
+        float a = controlPoints[1]->x - origin.x;
+        float b = controlPoints[2]->y - origin.y;
         
         float tMax = 2 * PI;
         float tStep = tMax / n;
@@ -157,63 +431,105 @@ struct Ellipse : public MathShape
     }
 };
 
-struct ArcOfCircle : public MathShape
+struct ArcOfCircle : public MathFunction
 {
     int n = 50;
-    
-    float a = 1.0f;
-    float b = 1.0f;
 
-    float minAngle = 0.0f;
-    float maxAngle = PI;
+    float radius = 5.0f;
 
-    sf::Vector2f origin = sf::Vector2f(0, 0);
+    ArcOfCircle()
+    {
+        controlPointLimit = 3;
+        controlPoints.push_back(new vertex(0.f, 0.f));
+        controlPoints.push_back(new vertex(5.0f, 0.0f));
+        controlPoints.push_back(new vertex(0.0f, 5.0f));
+        radius = 5.0f;
+    }
+
+    void SetVertexPosition(vertex* v, float x, float y) override
+    {
+        if (controlPoints.size() != 3) return;
+
+        if (v == controlPoints[0])
+        {
+            float xDist = controlPoints[1]->x - controlPoints[0]->x;
+            float yDist = controlPoints[1]->y - controlPoints[0]->y;
+            float xDist2 = controlPoints[2]->x - controlPoints[0]->x;
+            float yDist2 = controlPoints[2]->y - controlPoints[0]->y;
+
+            v->x = x;
+            v->y = y;
+            controlPoints[1]->x = x + xDist;
+            controlPoints[1]->y = y + yDist;
+            controlPoints[2]->x = x + xDist2;
+            controlPoints[2]->y = y + yDist2;
+        }
+
+        else if (v == controlPoints[1])
+        {
+            sf::Vector2f vect = {v->x - controlPoints[0]->x, v->y - controlPoints[0]->y};
+            float newRadius = Utils::Norm(vect);
+
+            sf::Vector2f vect2 = {controlPoints[2]->x - controlPoints[0]->x, controlPoints[2]->y - controlPoints[0]->y};
+            Utils::Normalize(vect2);
+            vect2 *= newRadius;
+
+            v->x = x;
+            v->y = y;
+            controlPoints[2]->x = controlPoints[0]->x + vect2.x;
+            controlPoints[2]->y = controlPoints[0]->y + vect2.y;
+
+            radius = newRadius;
+        }
+
+        else if (v == controlPoints[2])
+        {
+            sf::Vector2f vect = {v->x - controlPoints[0]->x, v->y - controlPoints[0]->y};
+            float newRadius = Utils::Norm(vect);
+
+            sf::Vector2f vect2 = {controlPoints[1]->x - controlPoints[0]->x, controlPoints[1]->y - controlPoints[0]->y};
+            Utils::Normalize(vect2);
+            vect2 *= newRadius;
+
+            v->x = x;
+            v->y = y;
+            controlPoints[1]->x = controlPoints[0]->x + vect2.x;
+            controlPoints[1]->y = controlPoints[0]->y + vect2.y;
+
+            radius = newRadius;
+        }
+    }
     
-    std::vector<vertex> operator()() const override
+    std::vector<vertex> operator()() override
     {
         std::vector<vertex> result;
+        if (controlPoints.size() != 3) return result;
         
-        float tMax = maxAngle;
-        float tStep = tMax / n;
+        vertex origin = *controlPoints[0];
+        vertex a = *controlPoints[1];
+        vertex b = *controlPoints[2];
+
+        sf::Vector2f v1 = {a.x - origin.x, -(a.y - origin.y)};
+        sf::Vector2f v2 = {b.x - origin.x, -(b.y - origin.y)};
+        float minAngle = Utils::GetAngle(v1);
+        float maxAngle = Utils::GetAngle(v2);
+
+        if (maxAngle < minAngle)
+            maxAngle += 2 * PI;
+        
+        float angleRange = maxAngle - minAngle;
+        float tStep = angleRange / n;
         float tTemp = minAngle;
 
-        while (tTemp < tMax + tStep)
+        for (int i = 0; i <= n; i++)
         {
             vertex v;
-            v.x = origin.x + a * cos(tTemp);
-            v.y = origin.y + b * sin(tTemp);
+            v.x = origin.x + radius * cos(tTemp);
+            v.y = origin.y + radius * sin(tTemp);
             result.push_back(v);
             tTemp += tStep;
         }
-        return result;
-    }
-};
-
-struct Diamond : public MathShape
-{
-    int n = 50;
-    
-    float a = 1.0f;
-    float b = 1.0f;
-
-    sf::Vector2f origin = sf::Vector2f(0, 0);
-    
-    std::vector<vertex> operator()() const override
-    {
-        std::vector<vertex> result;
         
-        float tMax = 2 * PI;
-        float tStep = tMax / n;
-        float tTemp = 0.0f;
-
-        while (tTemp < tMax + tStep)
-        {
-            vertex v;
-            v.x = origin.x + a * pow(cos(tTemp), 3);
-            v.y = origin.y + b * pow(sin(tTemp), 3);
-            result.push_back(v);
-            tTemp += tStep;
-        }
         return result;
     }
 };

@@ -9,8 +9,6 @@ class Graph : public Scene
 public:
     Graph() = default;
     ~Graph() = default;
-
-    std::vector<Curve> vCurves;
     
 protected:
     void OnInitialize();
@@ -37,10 +35,20 @@ private:
     float m_currentZoom = 1.f;
 
     sf::View* m_pView = nullptr;
+    sf::View* m_pUiView = nullptr;
+    sf::RenderWindow* m_pWindow = nullptr;
+
+    // ShapeType Selection
+    FunctionType m_selectedType = LINEAR;
+
+    // Curve Selection
+    Curve* m_selectedCurve = nullptr;
+    std::vector<Curve*> m_vCurves;
+    vertex* m_selectedVertex = nullptr;
     
     void DrawGraph();
-    void DrawVertex(vertex& vertex);
     void HandleMouseMovement();
+    void HandleVertexSelection(bool state);
 
     void InitDiamond();
     void InitHeart();

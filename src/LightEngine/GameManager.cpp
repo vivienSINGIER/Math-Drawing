@@ -41,6 +41,10 @@ void GameManager::CreateWindow(unsigned int width, unsigned int height, const ch
 	mpView->setCenter(sf::Vector2f(0, 0));
 	mpView->setSize(sf::Vector2f(width, height));
 
+	mpUIView = new sf::View();
+	mpUIView->setCenter(sf::Vector2f(0, 0));
+	mpUIView->setSize(sf::Vector2f(width, height));
+
 	mpWindow->setView(*mpView);
 
 	mWindowWidth = width;

@@ -47,6 +47,11 @@ namespace Utils
 		}
 		return result;
 	}
+
+	float Abs(float x)
+	{
+		return (x < 0) ? -x : x;
+	}
 	
 	float Cos(float x)
 	{
@@ -99,6 +104,22 @@ namespace Utils
 		return std::atan2(det, dot) * 180 / 3.14159265;
 	}
 
+	float GetAngle(sf::Vector2f& v1, sf::Vector2f& v2)
+	{
+		float dot = v1.x * v2.x + v1.y * v2.y;
+		float det = v1.x * v2.y - v1.y * v2.x;
+
+		return std::atan2(det, dot);
+	}
+
+	float GetAngle(sf::Vector2f& v1)
+	{
+		float dot = v1.x * 1.0f + v1.y * 0.0f;
+		float det = v1.x * 0.0f - v1.y * 1.0f;
+
+		return std::atan2(det, dot);
+	}
+
 	sf::Vector2f NormalizeVector(sf::Vector2f const& vector)
 	{
 		float magnitude = Sqrt(vector.x * vector.x + vector.y * vector.y);
@@ -111,5 +132,12 @@ namespace Utils
 		result.y = vector.y / magnitude;
 
 		return result;		
+	}
+
+	float Norm(sf::Vector2f const& vector)
+	{
+		float magnitude = Sqrt(vector.x * vector.x + vector.y * vector.y);
+		
+		return magnitude;		
 	}
 }

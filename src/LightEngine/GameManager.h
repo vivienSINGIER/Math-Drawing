@@ -19,6 +19,7 @@ class GameManager
 {
     sf::RenderWindow* mpWindow;
     sf::View* mpView;
+    sf::View* mpUIView;
     sf::Font mFont;
 
     Scene* mpScene;
@@ -40,9 +41,6 @@ private:
     void Draw();
 
     void SetDeltaTime(float deltaTime) { mDeltaTime = deltaTime; }
-
-    sf::RenderWindow* GetWindow() const { return mpWindow; }
-
 public:
     ~GameManager();
     static GameManager* Get();
@@ -52,10 +50,12 @@ public:
     template<typename T>
     void LaunchScene();
 
+    sf::RenderWindow* GetWindow() const { return mpWindow; }
     float GetDeltaTime() const { return mDeltaTime; }
     Scene* GetScene() const { return mpScene; }
     sf::Font& GetFont() { return mFont; };
     sf::View* GetView() const { return mpView; }
+    sf::View* GetUIView() const { return mpUIView; }
 
     friend Debug;
     friend Scene;

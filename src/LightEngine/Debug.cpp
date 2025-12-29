@@ -15,6 +15,9 @@ Debug* Debug::Get()
 
 void Debug::Draw(sf::RenderWindow* pRenderWindow)
 {
+	sf::View* view = GameManager::Get()->GetView();
+	sf::View* uiView = GameManager::Get()->GetUIView();
+	
 	for (Line& line : mLines)
 	{
 		pRenderWindow->draw(&line.start, 2, sf::Lines);
@@ -28,6 +31,14 @@ void Debug::Draw(sf::RenderWindow* pRenderWindow)
 	}
 
 	mTexts.clear();
+
+	for (sf::Text& text : mUITexts)
+	{
+		pRenderWindow->setView(*uiView);
+		pRenderWindow->draw(text);
+		pRenderWindow->setView(*view);
+	}
+	mUITexts.clear();
 
 	for (sf::CircleShape& circle : mCircles)
 	{
@@ -69,12 +80,12 @@ void Debug::DrawCircle(float x, float y, float radius, const sf::Color& color)
 	Debug::Get()->mCircles.push_back(circle);
 }
 
-void Debug::DrawText(float x, float y, const std::string& text, const sf::Color& color)
+void Debug::DrawText(float x, float y, const std::string& text, const sf::Color& color, float size, bool ui)
 {
-	DrawText(x, y, text, 0.f, 0.f, color);
+	DrawText(x, y, text, 0.f, 0.f, color, size, ui);
 }
 
-void Debug::DrawText(float x, float y, const std::string& text, float ratioX, float ratioY, const sf::Color& color)
+void Debug::DrawText(float x, float y, const std::string& text, float ratioX, float ratioY, const sf::Color& color, float size, bool ui)
 {
 	_ASSERT(ratioX >= 0.f && ratioX <= 1.f);
 	_ASSERT(ratioY >= 0.f && ratioY <= 1.f);
@@ -83,12 +94,15 @@ void Debug::DrawText(float x, float y, const std::string& text, float ratioX, fl
 
 	sfText.setFont(GameManager::Get()->GetFont());
 	sfText.setString(text);
-	sfText.setCharacterSize(10);
+	sfText.setCharacterSize(size);
 	sfText.setFillColor(color);
 	sfText.setPosition(x, y);
 
 	const sf::FloatRect& bounds = sfText.getLocalBounds();
 	sfText.setOrigin(bounds.width * ratioX, bounds.height * ratioY);
 
-	Debug::Get()->mTexts.push_back(sfText);
+	if (ui)
+		Debug::Get()->mUITexts.push_back(sfText);
+	else
+		Debug::Get()->mTexts.push_back(sfText);
 }

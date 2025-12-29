@@ -5,25 +5,28 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
 
+#include "MathFunctions.hpp"
+
 class Curve 
 {
 public:
     Curve() = default;
     ~Curve() = default;
 
+    FunctionType m_type = LINEAR;
+    
     sf::Vector2f origin;
-    
     std::vector<vertex> m_vertices;
-
-    void DrawPath(sf::Color color);
-    void DrawPoints(sf::Color color, float radius);
     
-    template <typename Func>
-    void CalculateCurve(float xmin, float xmax, int n, Func&& func);
+    MathFunction* m_function = nullptr;
 
-    template <typename Func>
-    void CalculateShape(Func&& func);    
-
+    FunctionType GetFunctionType() { return m_type; }
+    void SetType(FunctionType type);
+    
+    void DrawPath(sf::Color color);
+    void DrawPoints();
+    
+    void CalculateCurve(MathFunction* func = nullptr);
 };
 
 #include "Curve.inl"
