@@ -42,6 +42,7 @@ private:
     FunctionType m_selectedType = LINEAR;
 
     // Curve Selection
+    int m_selectedIndex = 0;
     Curve* m_selectedCurve = nullptr;
     std::vector<Curve*> m_vCurves;
     vertex* m_selectedVertex = nullptr;

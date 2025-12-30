@@ -52,6 +52,12 @@ namespace Utils
 	{
 		return (x < 0) ? -x : x;
 	}
+
+	int RoundToInt(float value) {
+		return (value >= 0.0f)
+			? static_cast<int>(value + 0.5f)
+			: static_cast<int>(value - 0.5f);
+	}
 	
 	float Cos(float x)
 	{

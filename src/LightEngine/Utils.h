@@ -9,6 +9,8 @@ namespace Utils
 	int Factorial(int n);
 	float BinomialCoeff(int n, int k);
 	float Abs(float x);
+
+	int RoundToInt(float x);
 	
 	float Cos(float x);
 	float Sin(float x);

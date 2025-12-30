@@ -52,6 +52,16 @@ struct MathFunction
         v->x = x;
         v->y = y;
     }
+    virtual vertex* AddControlPoint( float x, float y )
+    {
+        if (controlPoints.size() >= controlPointLimit) return nullptr;
+        
+        vertex* v = new vertex;
+        v->x = x;
+        v->y = y;
+        controlPoints.push_back(v);
+        return v;
+    }
 };
 
 struct Linear : public MathFunction
@@ -333,8 +343,27 @@ struct BezierCurve : public MathFunction
     {
         controlPoints.push_back(new vertex(0.f, 0.f));
         controlPoints.push_back(new vertex(1.5f, 3.5f));
-        controlPoints.push_back(new vertex(2.5f, 3.5f));
         controlPoints.push_back(new vertex(5.f, 5.f));
+    }
+
+    void OnDrawPoints() override
+    {
+        for (int i = 0; i < controlPoints.size() - 1; i++)
+        {
+            Debug::DrawLine(controlPoints[i]->x * TILE_SIZE,
+            -controlPoints[i]->y * TILE_SIZE,
+            controlPoints[i + 1]->x * TILE_SIZE,
+            -controlPoints[i + 1]->y * TILE_SIZE, sf::Color::White);   
+        }
+    }
+    
+    vertex* AddControlPoint(float x, float y) override
+    {
+        vertex* v = new vertex;
+        v->x = x;
+        v->y = y;
+        controlPoints.insert(controlPoints.end() - 1, v);
+        return v;
     }
     
     std::vector<vertex> operator()() override

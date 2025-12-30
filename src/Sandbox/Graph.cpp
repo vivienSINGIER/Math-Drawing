@@ -19,7 +19,7 @@ void Graph::OnInitialize()
     // InitBezier();
 
     Curve* curve = new Curve;
-    curve->SetType(ARC_CIRCLE);
+    curve->SetType(LINEAR);
     curve->CalculateCurve();
 
     m_selectedCurve = curve;
@@ -100,6 +100,50 @@ void Graph::OnEvent(const sf::Event& event)
             m_selectedType = ARC_CIRCLE;
             break;
         }
+
+        // Type change
+        if (event.key.code == sf::Keyboard::Enter)
+        {
+            if (m_selectedCurve != nullptr)
+            {
+                m_selectedCurve->SetType(m_selectedType);
+                m_selectedCurve->CalculateCurve();
+            }
+        }
+
+        // Curve Selection
+        if (event.key.code == sf::Keyboard::Up)
+            m_selectedIndex++;
+        if (event.key.code == sf::Keyboard::Down)
+            m_selectedIndex--;
+
+        // Curve Creation
+        if (event.key.code == sf::Keyboard::Add)
+        {
+            Curve* curve = new Curve;
+            curve->SetType(m_selectedType);
+            curve->CalculateCurve();
+            m_selectedCurve = curve;
+            m_vCurves.push_back(curve);
+            m_selectedIndex = m_vCurves.size() - 1;
+        }
+        if (event.key.code == sf::Keyboard::Subtract)
+        {
+            delete m_vCurves[m_selectedIndex];
+            m_vCurves.erase(m_vCurves.begin() + m_selectedIndex);
+            m_selectedIndex--;
+        }
+
+        // Curve Selection
+        if (m_selectedIndex < 0)
+            m_selectedIndex = 0;
+        if (m_selectedIndex >= m_vCurves.size())
+            m_selectedIndex = m_vCurves.size() - 1;
+
+        if (m_selectedIndex >= 0)
+            m_selectedCurve = m_vCurves[m_selectedIndex];
+        else
+            m_selectedCurve = nullptr;
     }
 }
 
@@ -125,24 +169,35 @@ void Graph::OnUpdate()
     sf::Vector2i mousePos = sf::Mouse::getPosition(*GameManager::Get()->GetWindow());
     sf::Vector2f worldPos = m_pWindow->mapPixelToCoords(mousePos, *m_pView);
 
-    m_selectedCurve->m_function->SetVertexPosition(m_selectedVertex, worldPos.x / TILE_SIZE, -worldPos.y / TILE_SIZE);
+    worldPos.x /= TILE_SIZE;
+    worldPos.y /= TILE_SIZE;
+    
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+    {
+        worldPos.x = Utils::RoundToInt(worldPos.x);
+        worldPos.y = Utils::RoundToInt(worldPos.y);
+    }
+    
+    m_selectedCurve->m_function->SetVertexPosition(m_selectedVertex, worldPos.x, -worldPos.y);
     m_selectedCurve->CalculateCurve();
 }
 
 void Graph::DrawGraph()
 {
-    Debug::DrawLine(m_minX * TILE_SIZE, 0.0f, m_maxX * TILE_SIZE, 0.0f, sf::Color::White);
-    Debug::DrawLine(0.0f, m_minY * TILE_SIZE, 0.0f, m_maxY * TILE_SIZE, sf::Color::White);
-    
     float tempX = m_minX;
     while (tempX <= m_maxX)
     {
         float size = 10.0f;
         if (tempX == m_maxX || tempX == m_minX)
             size *= 1.5f;
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+            Debug::DrawLine(tempX * TILE_SIZE, m_minY * TILE_SIZE, tempX * TILE_SIZE, m_maxY * TILE_SIZE, sf::Color(50, 50, 50));
+        
         Debug::DrawLine(tempX * TILE_SIZE, -size, tempX * TILE_SIZE, size, sf::Color::White);
         if ((int)tempX != 0)
             Debug::DrawText(tempX * TILE_SIZE - 2.5f, 21.0f, std::to_string((int)tempX), sf::Color::Red);
+            
         tempX += m_interval_X;
     }
 
@@ -152,12 +207,20 @@ void Graph::DrawGraph()
         float size = 10.0f;
         if (tempY == m_maxY || tempY == m_minY)
             size *= 1.5f;
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+            Debug::DrawLine(m_minX * TILE_SIZE, tempY * TILE_SIZE, m_maxX * TILE_SIZE, tempY * TILE_SIZE, sf::Color(50, 50, 50));
+        
         Debug::DrawLine(-size, tempY * TILE_SIZE, size, tempY * TILE_SIZE, sf::Color::White);
         if ((int)tempY != 0)
             Debug::DrawText(-35.f, tempY * TILE_SIZE - 2.5f, std::to_string((int)-tempY), sf::Color::Green);
+        
         tempY += m_interval_Y;
     }
 
+    Debug::DrawLine(m_minX * TILE_SIZE, 0.0f, m_maxX * TILE_SIZE, 0.0f, sf::Color::White);
+    Debug::DrawLine(0.0f, m_minY * TILE_SIZE, 0.0f, m_maxY * TILE_SIZE, sf::Color::White);
+    
     std::string typeStr = std::string(magic_enum::enum_name(m_selectedType));
 
     sf::Vector2f txtPos = m_pUiView->getCenter() - m_pUiView->getSize() / 2.f;
@@ -201,8 +264,29 @@ void Graph::HandleVertexSelection(bool state)
     {
         m_selectedVertex = newSelected;
         m_selectedVertex->isSelected = true;
+        return;
+    }
+
+    worldPos.x /= TILE_SIZE;
+    worldPos.y /= TILE_SIZE;
+    
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+    {
+        worldPos.x = Utils::RoundToInt(worldPos.x);
+        worldPos.y = Utils::RoundToInt(worldPos.y);
+    }
+
+    vertex* v = m_selectedCurve->m_function->AddControlPoint(worldPos.x, -worldPos.y);
+
+    if (v != nullptr)
+    {
+        if (m_selectedVertex != nullptr)
+            m_selectedVertex->isSelected = false;
+        m_selectedVertex = v;
+        m_selectedVertex->isSelected = true;
     }
     
+    m_selectedCurve->CalculateCurve();
 }
 
 void Graph::InitDiamond()
