@@ -14,17 +14,8 @@
 void Graph::OnInitialize()
 {
     //InitDiamond();
-    //InitHeart();
-    // InitEllipse();
-    // InitBezier();
-
-    Curve* curve = new Curve;
-    curve->SetType(LINEAR);
-    curve->CalculateCurve();
-
-    m_selectedCurve = curve;
-    
-    m_vCurves.push_back(curve);
+    // InitHeart();
+    InitSpade();
     
     //Zoom
     m_pView = GameManager::Get()->GetView();
@@ -291,88 +282,82 @@ void Graph::HandleVertexSelection(bool state)
 
 void Graph::InitDiamond()
 {
-    // sf::Vector2f origin = sf::Vector2f(2.5f, 0.5f);
-    //
-    // Curve* curve = new Curve();
-    // curve->origin = origin;
-    // Hermite* hermite = new Hermite();
-    // hermite->v1 = sf::Vector2f(-2.0f, 3.0f);
-    // hermite->fp1 = 0.3f;
-    // hermite->v2 = sf::Vector2f(0.0f, 6.0f);
-    // hermite->fp2 = 2.0f;
-    // curve->CalculateCurve(-2.0f, 0.0f, 50, hermite);
-    // m_vCurves.push_back(curve);
-    //
-    // Curve* curve2 = new Curve();
-    // curve2->origin = origin;
-    // Hermite* hermite2 = new Hermite();
-    // hermite2->v1 = sf::Vector2f(0.0f, 6.0f);
-    // hermite2->fp1 = -2.0f;
-    // hermite2->v2 = sf::Vector2f(2.0f, 3.0f);
-    // hermite2->fp2 = -0.3f;
-    // curve2->CalculateCurve(0.0f, 2.0f, 50, hermite2);
-    // m_vCurves.push_back(curve2);
-    //
-    // Curve* curve3 = new Curve();
-    // curve3->origin = origin;
-    // Hermite* hermite3 = new Hermite();
-    // hermite3->v1 = sf::Vector2f(-2.0f, 3.0f);
-    // hermite3->fp1 = -0.3f;
-    // hermite3->v2 = sf::Vector2f(0.0f, 0.0f);
-    // hermite3->fp2 = -2.0f;
-    // curve3->CalculateCurve(-2.0f, 0.0f, 50, hermite3);
-    // m_vCurves.push_back(curve3);
-    //
-    // Curve* curve4 = new Curve();
-    // curve4->origin = origin;
-    // Hermite* hermite4 = new Hermite();
-    // hermite4->v1 = sf::Vector2f(0.0f, 0.0f);
-    // hermite4->fp1 = 2.0f;
-    // hermite4->v2 = sf::Vector2f(2.0f, 3.0f);
-    // hermite4->fp2 = 0.3f;
-    // curve4->CalculateCurve(0.0f, 2.0f, 50, hermite4);
-    // m_vCurves.push_back(curve4);
+    Curve* curve = new Curve();
+    curve->SetType(BEZIER);
+    curve->m_function->ClearControlPoints();
+    curve->m_function->controlPoints.push_back(new vertex(0.0f, 0.0f));
+    curve->m_function->controlPoints.push_back(new vertex(1.0f, 3.0f));
+    curve->m_function->controlPoints.push_back(new vertex(3.0f, 4.0f));
+    curve->CalculateCurve();
+    m_vCurves.push_back(curve);
+
+    Curve* curve1 = new Curve();
+    curve1->SetType(BEZIER);
+    curve1->m_function->ClearControlPoints();
+    curve1->m_function->controlPoints.push_back(new vertex(0.0f, 0.0f));
+    curve1->m_function->controlPoints.push_back(new vertex(-1.0f, 3.0f));
+    curve1->m_function->controlPoints.push_back(new vertex(-3.0f, 4.0f));
+    curve1->CalculateCurve();
+    m_vCurves.push_back(curve1);
+
+    Curve* curve2 = new Curve();
+    curve2->SetType(BEZIER);
+    curve2->m_function->ClearControlPoints();
+    curve2->m_function->controlPoints.push_back(new vertex(0.0f, 8.0f));
+    curve2->m_function->controlPoints.push_back(new vertex(1.0f, 5.0f));
+    curve2->m_function->controlPoints.push_back(new vertex(3.0f, 4.0f));
+    curve2->CalculateCurve();
+    m_vCurves.push_back(curve2);
+
+    Curve* curve3 = new Curve();
+    curve3->SetType(BEZIER);
+    curve3->m_function->ClearControlPoints();
+    curve3->m_function->controlPoints.push_back(new vertex(0.0f, 8.0f));
+    curve3->m_function->controlPoints.push_back(new vertex(-1.0f, 5.0f));
+    curve3->m_function->controlPoints.push_back(new vertex(-3.0f, 4.0f));
+    curve3->CalculateCurve();
+    m_vCurves.push_back(curve3);
 }
 
 void Graph::InitHeart()
 {
-    // Curve* curve = new Curve();
-    // ArcOfCircle* arcOfCircle = new ArcOfCircle();
-    // arcOfCircle->origin = sf::Vector2f(-1.0f, 4.0f);
-    // arcOfCircle->controlPoints.push_back(new vertex(Utils::Sqrt(2), Utils::Sqrt(2)));
-    // arcOfCircle->controlPoints.push_back(new vertex(Utils::Sqrt(2), Utils::Sqrt(2)));
-    // arcOfCircle->minAngle = PI / 4.0f;
-    // arcOfCircle->maxAngle = PI;
-    // curve->CalculateShape(arcOfCircle);
-    // m_vCurves.push_back(curve);
-    //
-    // Curve* curve1 = new Curve;
-    // ArcOfCircle* arcOfCircle1 = new ArcOfCircle();
-    // arcOfCircle1->origin = sf::Vector2f(1.0f, 4.0f);
-    // arcOfCircle1->controlPoints.push_back(new vertex(Utils::Sqrt(2), Utils::Sqrt(2)));
-    // arcOfCircle1->controlPoints.push_back(new vertex(Utils::Sqrt(2), Utils::Sqrt(2)));
-    // arcOfCircle1->minAngle = 0.0f;
-    // arcOfCircle1->maxAngle = PI - PI / 4.0f;
-    // curve1->CalculateShape(arcOfCircle1);
-    // m_vCurves.push_back(curve1);
-    //
-    // Curve* curve2 = new Curve();
-    // Hermite* hermite1 = new Hermite();
-    // hermite1->v1 = sf::Vector2f(-1.0f - Utils::Sqrt(2), 4.0f);
-    // hermite1->fp1 = -2.0f;
-    // hermite1->v2 = sf::Vector2f(0.0f, 0.0f);
-    // hermite1->fp2 = -0.9f;
-    // curve2->CalculateCurve(-1.0f - Utils::Sqrt(2), 0.0f, 50, hermite1);
-    // m_vCurves.push_back(curve2);
-    //
-    // Curve* curve3 = new Curve();
-    // Hermite* hermite2 = new Hermite();
-    // hermite2->v1 = sf::Vector2f(1.0f + Utils::Sqrt(2), 4.0f);
-    // hermite2->fp1 = 2.0f;
-    // hermite2->v2 = sf::Vector2f(0.0f, 0.0f);
-    // hermite2->fp2 = 0.9f;
-    // curve3->CalculateCurve(1.0f + Utils::Sqrt(2), 0.0f, 50, hermite2);
-    // m_vCurves.push_back(curve3);
+    Curve* curve = new Curve();
+    curve->SetType(ARC_CIRCLE);
+    curve->m_function->ClearControlPoints();
+    curve->m_function->controlPoints.push_back(new vertex(2.0f, 6.0f));
+    curve->m_function->controlPoints.push_back(new vertex(4.0f, 6.0f));
+    curve->m_function->controlPoints.push_back(new vertex(0.0f, 6.0f));
+    curve->CalculateCurve();
+    m_vCurves.push_back(curve);
+
+    Curve* curve1 = new Curve();
+    curve1->SetType(ARC_CIRCLE);
+    curve1->m_function->ClearControlPoints();
+    curve1->m_function->controlPoints.push_back(new vertex(-2.0f, 6.0f));
+    curve1->m_function->controlPoints.push_back(new vertex(0.0f, 6.0f));
+    curve1->m_function->controlPoints.push_back(new vertex(-4.0f, 6.0f));
+    curve1->CalculateCurve();
+    m_vCurves.push_back(curve1);
+
+    Curve* curve2 = new Curve();
+    curve2->SetType(BEZIER);
+    curve2->m_function->ClearControlPoints();
+    curve2->m_function->controlPoints.push_back(new vertex(0.0f, 0.0f));
+    curve2->m_function->controlPoints.push_back(new vertex(2.0f, 2.0f));
+    curve2->m_function->controlPoints.push_back(new vertex(4.0f, 4.0f));
+    curve2->m_function->controlPoints.push_back(new vertex(4.0f, 6.0f));
+    curve2->CalculateCurve();
+    m_vCurves.push_back(curve2);
+
+    Curve* curve3 = new Curve();
+    curve3->SetType(BEZIER);
+    curve3->m_function->ClearControlPoints();
+    curve3->m_function->controlPoints.push_back(new vertex(0.0f, 0.0f));
+    curve3->m_function->controlPoints.push_back(new vertex(-2.0f, 2.0f));
+    curve3->m_function->controlPoints.push_back(new vertex(-4.0f, 4.0f));
+    curve3->m_function->controlPoints.push_back(new vertex(-4.0f, 6.0f));
+    curve3->CalculateCurve();
+    m_vCurves.push_back(curve3);
 }
 
 void Graph::InitEllipse()

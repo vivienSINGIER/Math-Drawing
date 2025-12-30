@@ -53,8 +53,8 @@ private:
 
     void InitDiamond();
     void InitHeart();
-    void InitEllipse();
     void InitSpade();
+    void InitEllipse();
 
     void InitBezier();
 };

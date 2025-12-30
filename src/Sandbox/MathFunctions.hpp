@@ -22,10 +22,16 @@ struct MathFunction
 {
     ~MathFunction()
     {
+        ClearControlPoints();
+    }
+
+    void ClearControlPoints()
+    {
         for (vertex* v : controlPoints)
         {
             delete v;
         }
+        controlPoints.clear();
     }
     
     std::vector<vertex*> controlPoints;
@@ -513,19 +519,14 @@ struct ArcOfCircle : public MathFunction
 
         else if (v == controlPoints[2])
         {
-            sf::Vector2f vect = {v->x - controlPoints[0]->x, v->y - controlPoints[0]->y};
-            float newRadius = Utils::Norm(vect);
-
             sf::Vector2f vect2 = {controlPoints[1]->x - controlPoints[0]->x, controlPoints[1]->y - controlPoints[0]->y};
             Utils::Normalize(vect2);
-            vect2 *= newRadius;
+            vect2 *= radius;
 
             v->x = x;
             v->y = y;
             controlPoints[1]->x = controlPoints[0]->x + vect2.x;
             controlPoints[1]->y = controlPoints[0]->y + vect2.y;
-
-            radius = newRadius;
         }
     }
     
@@ -543,6 +544,8 @@ struct ArcOfCircle : public MathFunction
         float minAngle = Utils::GetAngle(v1);
         float maxAngle = Utils::GetAngle(v2);
 
+        radius = Utils::Norm(v1);
+        
         if (maxAngle < minAngle)
             maxAngle += 2 * PI;
         
