@@ -446,7 +446,116 @@ void Graph::InitSpade()
 
 void Graph::InitClub()
 {
+    Curve* curve = new Curve();
+    curve->SetType(LINEAR);
+    curve->m_function->ClearControlPoints();
+    curve->m_function->controlPoints.push_back(new vertex(-1.0f, 0.0f));
+    curve->m_function->controlPoints.push_back(new vertex(1.0f, 0.0f));
+    curve->CalculateCurve();
+    m_vCurves.push_back(curve);
+
+    Curve* curve1 = new Curve();
+    curve1->SetType(BEZIER);
+    curve1->m_function->ClearControlPoints();
+    curve1->m_function->controlPoints.push_back(new vertex(1.0f, 0.0f));
+    curve1->m_function->controlPoints.push_back(new vertex(0.6f, 0.3f));
+    curve1->m_function->controlPoints.push_back(new vertex(0.4f, 2.0f));
+    curve1->CalculateCurve();
+    m_vCurves.push_back(curve1);
     
+    Curve* curve2 = new Curve();
+    curve2->SetType(BEZIER);
+    curve2->m_function->ClearControlPoints();
+    curve2->m_function->controlPoints.push_back(new vertex(-1.0f, 0.0f));
+    curve2->m_function->controlPoints.push_back(new vertex(-0.6f, 0.3f));
+    curve2->m_function->controlPoints.push_back(new vertex(-0.4f, 2.0f));
+    curve2->CalculateCurve();
+    m_vCurves.push_back(curve2);
+
+    Curve* curve3 = new Curve();
+    curve3->SetType(HERMITE);
+    curve3->m_function->ClearControlPoints();
+    curve3->m_function->controlPoints.push_back(new vertex(0.4f, 2.0f));
+    curve3->m_function->controlPoints.push_back(new vertex(1.0f, 1.7f));
+    curve3->m_function->controlPoints.push_back(new vertex(1.1f, 2.0f));
+    curve3->m_function->controlPoints.push_back(new vertex(0.0f, 2.3f));
+    curve3->CalculateCurve();
+    m_vCurves.push_back(curve3);
+
+    Curve* curve4 = new Curve();
+    curve4->SetType(HERMITE);
+    curve4->m_function->ClearControlPoints();
+    curve4->m_function->controlPoints.push_back(new vertex(-1.0f, 1.7f));
+    curve4->m_function->controlPoints.push_back(new vertex(-0.4f, 2.0f));
+    curve4->m_function->controlPoints.push_back(new vertex(-0.0f, 2.3f));
+    curve4->m_function->controlPoints.push_back(new vertex(-1.1f, 2.0f));
+    curve4->CalculateCurve();
+    m_vCurves.push_back(curve4);
+
+    Curve* curve5 = new Curve();
+    curve5->SetType(ARC_CIRCLE);
+    curve5->m_function->ClearControlPoints();
+    curve5->m_function->controlPoints.push_back(new vertex(1.5f, 2.5f));
+    curve5->m_function->controlPoints.push_back(new vertex(1.0f, 1.7f));
+    curve5->m_function->controlPoints.push_back(new vertex(1.0f, 3.3f));
+    curve5->CalculateCurve();
+    m_vCurves.push_back(curve5);
+
+    Curve* curve6 = new Curve();
+    curve6->SetType(ARC_CIRCLE);
+    curve6->m_function->ClearControlPoints();
+    curve6->m_function->controlPoints.push_back(new vertex(-1.5f, 2.5f));
+    curve6->m_function->controlPoints.push_back(new vertex(-1.0f, 3.3f));
+    curve6->m_function->controlPoints.push_back(new vertex(-1.0f, 1.7f));
+    curve6->CalculateCurve();
+    m_vCurves.push_back(curve6);
+
+    Curve* curve7 = new Curve();
+    curve7->SetType(HERMITE);
+    curve7->m_function->ClearControlPoints();
+    curve7->m_function->controlPoints.push_back(new vertex(0.4f, 2.9f));
+    curve7->m_function->controlPoints.push_back(new vertex(1.0f, 3.3f));
+    curve7->m_function->controlPoints.push_back(new vertex(1.1f, 2.9f));
+    curve7->m_function->controlPoints.push_back(new vertex(0.0f, 2.7f));
+    curve7->CalculateCurve();
+    m_vCurves.push_back(curve7);
+
+    Curve* curve8 = new Curve();
+    curve8->SetType(HERMITE);
+    curve8->m_function->ClearControlPoints();
+    curve8->m_function->controlPoints.push_back(new vertex(-1.0f, 3.3f));
+    curve8->m_function->controlPoints.push_back(new vertex(-0.4f, 2.9f));
+    curve8->m_function->controlPoints.push_back(new vertex(-0.0f, 2.7f));
+    curve8->m_function->controlPoints.push_back(new vertex(-1.1f, 2.9f));
+    curve8->CalculateCurve();
+    m_vCurves.push_back(curve8);
+
+    Curve* curve9 = new Curve();
+    curve9->SetType(ARC_CIRCLE);
+    curve9->m_function->ClearControlPoints();
+    curve9->m_function->controlPoints.push_back(new vertex(0.0f, 4.3f));
+    curve9->m_function->controlPoints.push_back(new vertex(0.6f, 3.6f));
+    curve9->m_function->controlPoints.push_back(new vertex(-0.6f, 3.6f));
+    curve9->CalculateCurve();
+    m_vCurves.push_back(curve9);
+
+    Curve* curve10 = new Curve();
+    curve10->SetType(BEZIER);
+    curve10->m_function->ClearControlPoints();
+    curve10->m_function->controlPoints.push_back(new vertex(0.4f, 2.9f));
+    curve10->m_function->controlPoints.push_back(new vertex(0.3f, 3.3f));
+    curve10->m_function->controlPoints.push_back(new vertex(0.6f, 3.6f));
+    curve10->CalculateCurve();
+    m_vCurves.push_back(curve10);
+
+    Curve* curve11 = new Curve();
+    curve11->SetType(BEZIER);
+    curve11->m_function->ClearControlPoints();
+    curve11->m_function->controlPoints.push_back(new vertex(-0.4f, 2.9f));
+    curve11->m_function->controlPoints.push_back(new vertex(-0.3f, 3.3f));
+    curve11->m_function->controlPoints.push_back(new vertex(-0.6f, 3.6f));
+    curve11->CalculateCurve();
+    m_vCurves.push_back(curve11);
 }
 
 void Graph::InitBezier()
