@@ -58,6 +58,11 @@ namespace Utils
 			? static_cast<int>(value + 0.5f)
 			: static_cast<int>(value - 0.5f);
 	}
+
+	float RoundToStep(float x, float step)
+	{
+		return RoundToInt(x / step) * step ;
+	}
 	
 	float Cos(float x)
 	{

@@ -519,14 +519,12 @@ struct ArcOfCircle : public MathFunction
 
         else if (v == controlPoints[2])
         {
-            sf::Vector2f vect2 = {controlPoints[1]->x - controlPoints[0]->x, controlPoints[1]->y - controlPoints[0]->y};
+            sf::Vector2f vect2 = {x - controlPoints[0]->x, y - controlPoints[0]->y};
             Utils::Normalize(vect2);
             vect2 *= radius;
-
-            v->x = x;
-            v->y = y;
-            controlPoints[1]->x = controlPoints[0]->x + vect2.x;
-            controlPoints[1]->y = controlPoints[0]->y + vect2.y;
+            
+            v->x = controlPoints[0]->x + vect2.x;
+            v->y = controlPoints[0]->y + vect2.y;
         }
     }
     

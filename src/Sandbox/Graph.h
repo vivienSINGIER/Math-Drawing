@@ -54,7 +54,7 @@ private:
     void InitDiamond();
     void InitHeart();
     void InitSpade();
-    void InitEllipse();
+    void InitClub();
 
     void InitBezier();
 };

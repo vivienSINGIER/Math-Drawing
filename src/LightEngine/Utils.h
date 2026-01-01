@@ -11,6 +11,7 @@ namespace Utils
 	float Abs(float x);
 
 	int RoundToInt(float x);
+	float RoundToStep(float x, float step);
 	
 	float Cos(float x);
 	float Sin(float x);
