@@ -29,13 +29,6 @@ void Debug::Draw(sf::RenderWindow* pRenderWindow)
 
 	mTexts.clear();
 
-	for (sf::Text& text : mStaticTexts)
-	{
-		pRenderWindow->draw(text);
-	}
-
-	mStaticTexts.clear();
-
 	for (sf::CircleShape& circle : mCircles)
 	{
 		pRenderWindow->draw(circle);
@@ -98,27 +91,4 @@ void Debug::DrawText(float x, float y, const std::string& text, float ratioX, fl
 	sfText.setOrigin(bounds.width * ratioX, bounds.height * ratioY);
 
 	Debug::Get()->mTexts.push_back(sfText);
-}
-
-void Debug::DrawStaticText(sf::Vector2f pos, const std::string& text, sf::Vector2f scale, const sf::Color& color)
-{
-	sf::Text sfText;
-
-	sfText.setFont(GameManager::Get()->GetFont());
-	sfText.setString(text);
-	sfText.setCharacterSize(10);
-	sfText.setFillColor(color);
-
-	sf::View* pView = GameManager::Get()->GetView();
-	sf::Vector2i windowSize = GameManager::Get()->GetWindowSize();
-
-	sf::Vector2f posText = pos;
-	posText.x -= windowSize.x / 2 * pView->getSize().x / windowSize.x;
-	posText.y -= windowSize.y / 2 * pView->getSize().y / windowSize.y;
-	posText += pView->getCenter();
-
-	sfText.setPosition(posText.x, posText.y);
-	sfText.setScale(pView->getSize().x / windowSize.x * scale.x, pView->getSize().y / windowSize.y * scale.y);
-
-	Debug::Get()->mStaticTexts.push_back(sfText);
 }

@@ -25,7 +25,6 @@ class Debug
 {
     std::vector<Line> mLines;
     std::vector<sf::Text> mTexts;
-    std::vector<sf::Text> mStaticTexts;
     std::vector<sf::CircleShape> mCircles;
 
     void Draw(sf::RenderWindow* pRenderWindow);
@@ -40,8 +39,6 @@ public:
     static void DrawCircle(float x, float y, float radius, const sf::Color& color);
     static void DrawText(float x, float y, const std::string& text, const sf::Color& color);
     static void DrawText(float x, float y, const std::string& text, float ratioX, float ratioY, const sf::Color& color);
-
-    static void DrawStaticText(sf::Vector2f pos, const std::string& text, sf::Vector2f scale, const sf::Color& color);
 
     friend GameManager;
 };
