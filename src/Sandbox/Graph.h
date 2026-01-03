@@ -4,11 +4,21 @@
 #include "Curve.h"
 #include "Scene.h"
 
+class Interface;
+
+enum Type {
+    TypeBezier,
+    TypeHermite,
+    TypeLagrange
+};
+
 class Graph : public Scene
 {
 public:
     Graph() = default;
     ~Graph() = default;
+
+    void TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points = {}, bool isMirorO = false, bool isMirorX = false, bool isMirorY = false);
     
 protected:
     void OnInitialize();
@@ -16,6 +26,8 @@ protected:
     void OnUpdate();
 
 private:
+    std::vector<Curve> vCurves;
+
     float m_maxX = 100.0f;
     float m_maxY = 100.0f;
     float m_minX = -100.0f;
@@ -46,6 +58,8 @@ private:
     Curve* m_selectedCurve = nullptr;
     std::vector<Curve*> m_vCurves;
     vertex* m_selectedVertex = nullptr;
+
+    Interface* m_pInterface = nullptr;
     
     void DrawGraph();
     void HandleMouseMovement();
@@ -55,6 +69,7 @@ private:
     void InitHeart();
     void InitSpade();
     void InitClub();
+    void InitClover();
 
     void InitBezier();
 };

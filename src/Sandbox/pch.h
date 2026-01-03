@@ -28,4 +28,13 @@ struct vertex
     
     void Draw(sf::Color color);
     bool Contains(float x, float y);
+
+    vertex operator-()
+    {
+        vertex newVertex;
+        newVertex.x = -x;
+        newVertex.y = -y;
+
+        return newVertex;
+    }
 };

@@ -10,6 +10,9 @@
 #include "Debug.h"
 #include "Utils.h"
 #include "MathFunctions.hpp"
+#include "Interface.h"
+
+#include <iostream>
 
 void Graph::OnInitialize()
 {
@@ -23,10 +26,15 @@ void Graph::OnInitialize()
     m_pUiView = GameManager::Get()->GetUIView();
     m_windowSize = m_pView->getSize();
     m_pWindow = GameManager::Get()->GetWindow();
+
+    m_pInterface = new Interface;
+    m_pInterface->m_pGraph = this;
 }
 
 void Graph::OnEvent(const sf::Event& event)
 {
+    m_pInterface->OnEvent(event);
+
     if (event.type == sf::Event::MouseButtonPressed)
     {
         if (event.mouseButton.button == sf::Mouse::Left)
@@ -53,7 +61,7 @@ void Graph::OnEvent(const sf::Event& event)
         }
     }
 
-    //test zoom
+    //Zoom
     if (event.type == sf::Event::MouseWheelScrolled)
     {
         m_currentZoom += event.mouseWheelScroll.delta * -0.1f;
@@ -143,6 +151,7 @@ void Graph::OnUpdate()
 {
     HandleMouseMovement();
     DrawGraph();
+    m_pInterface->Update();
 
     for (Curve* curve : m_vCurves)
     {
@@ -243,7 +252,7 @@ void Graph::HandleMouseMovement()
     if (m_isMousePressed == false) return;
 
     sf::Vector2f mouseDelta = {(float)(m_lastMousePos.x - m_mousePos.x), -(float)(m_lastMousePos.y - m_mousePos.y)};
-    mouseDelta *= m_movementSpeed * GameManager::Get()->GetDeltaTime();
+    mouseDelta *= m_movementSpeed * GameManager::Get()->GetDeltaTime() * m_currentZoom;
 
     m_pView->move(mouseDelta.x, -mouseDelta.y);
 }
@@ -570,6 +579,116 @@ void Graph::InitBezier()
     Curve* curve = new Curve();
     curve->CalculateCurve(bezierCurve);
     m_vCurves.push_back(curve);
+}
+
+void Graph::TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points, bool isMirorO, bool isMirorX, bool isMirorY)
+{
+    Curve curve;
+    switch (type)
+    {
+    case TypeBezier:
+    {
+        BezierCurve bezierCurve;
+        bezierCurve.controlPoints = points;
+
+        curve.CalculateShape(bezierCurve);
+        break;
+    }
+    case TypeLagrange:
+    {
+        Lagrange lagrange;
+        
+        std::vector<float> x;
+        std::vector<float> y;
+
+        float minX = points[0].x;
+        float maxX = points[0].x;
+
+        for (vertex vertex : points)
+        {
+            x.push_back(vertex.x);
+            y.push_back(vertex.y);
+
+            if (minX > vertex.x)
+                minX = vertex.x;
+
+            else if (maxX < vertex.x)
+                maxX = vertex.x;
+        }
+
+        lagrange.xs = x;
+        lagrange.ys = y;
+
+        curve.CalculateCurve(minX, maxX, 50, lagrange);
+        break;
+    }
+    case TypeHermite:
+    {
+        if (points.size() != 2 || deriv1Points.size() != 2) return;
+
+        Hermite hermite;
+
+        hermite.v1.x = points[0].x;
+        hermite.v1.y = points[0].y;
+        hermite.fp1 = deriv1Points[0].y;
+
+        hermite.v2.x = points[1].x;
+        hermite.v2.y = points[1].y;
+        hermite.fp2 = deriv1Points[1].y;
+
+        float minX = hermite.v1.x;
+        float maxX = hermite.v2.x;
+
+        if (minX > maxX)
+        {
+            float temp = minX;
+            minX = maxX;
+            maxX = temp;
+        }
+
+        curve.CalculateCurve(minX, maxX, 50, hermite);
+        break;
+    }
+    }
+
+    
+    vCurves.push_back(curve);
+
+    if (isMirorO)
+    {
+        std::vector<vertex> altPoints;
+
+        for (int i = 0; i < points.size(); ++i)
+        {
+            altPoints.push_back(-points[i]);
+        }
+
+        TraceCourbe(type, altPoints, deriv1Points);
+    }
+
+    if (isMirorX)
+    {
+        std::vector<vertex> altPoints;
+
+        for (int i = 0; i < points.size(); ++i)
+        {
+            altPoints.push_back({points[i].x, -points[i].y});
+        }
+
+        TraceCourbe(type, altPoints, deriv1Points);
+    }
+
+    if (isMirorY)
+    {
+        std::vector<vertex> altPoints;
+
+        for (int i = 0; i < points.size(); ++i)
+        {
+            altPoints.push_back({-points[i].x, points[i].y});
+        }
+
+        TraceCourbe(type, altPoints, deriv1Points);
+    }
 }
 
 
