@@ -111,6 +111,17 @@ void Interface::SelectParameters(FunctionType type)
 
 void Interface::SelectNumberOfPoint(const sf::Event& event)
 {
+    if (event.key.code == sf::Keyboard::Backspace)
+    {
+        if (currentValue.size() != 0)
+            currentValue.pop_back();
+
+        std::cout << std::endl;
+
+        std::cout << currentValue;
+        return;
+    }
+
     char temp = ConvertKeyCode::Convert(event.key);
 
     if (event.key.code == sf::Keyboard::Enter)
@@ -133,6 +144,17 @@ void Interface::SelectNumberOfPoint(const sf::Event& event)
 
 void Interface::CreatePoint(const sf::Event& event)
 {
+    if (event.key.code == sf::Keyboard::Backspace)
+    {
+        if (currentValue.size() != 0)
+            currentValue.pop_back();
+
+        std::cout << std::endl;
+
+        std::cout << currentValue;
+        return;
+    }
+
     if (event.key.code == sf::Keyboard::Enter)
     {
         float temp = std::stof(currentValue);
