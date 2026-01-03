@@ -6,19 +6,13 @@
 
 class Interface;
 
-enum Type {
-    TypeBezier,
-    TypeHermite,
-    TypeLagrange
-};
-
 class Graph : public Scene
 {
 public:
     Graph() = default;
     ~Graph() = default;
 
-    void TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points = {}, bool isMirorO = false, bool isMirorX = false, bool isMirorY = false);
+    void TraceCourbe(FunctionType type, std::vector<vertex*> points, bool isMirorO = false, bool isMirorX = false, bool isMirorY = false);
     
 protected:
     void OnInitialize();

@@ -19,7 +19,7 @@ void Graph::OnInitialize()
     //InitDiamond();
     // InitHeart();
     // InitSpade();
-    InitClub();
+    //InitClub();
     
     //Zoom
     m_pView = GameManager::Get()->GetView();
@@ -581,113 +581,50 @@ void Graph::InitBezier()
     m_vCurves.push_back(curve);
 }
 
-void Graph::TraceCourbe(Type type, std::vector<vertex> points, std::vector<vertex> deriv1Points, bool isMirorO, bool isMirorX, bool isMirorY)
+void Graph::TraceCourbe(FunctionType type, std::vector<vertex*> points, bool isMirorO, bool isMirorX, bool isMirorY)
 {
-    Curve curve;
-    switch (type)
-    {
-    case TypeBezier:
-    {
-        BezierCurve bezierCurve;
-        bezierCurve.controlPoints = points;
-
-        curve.CalculateShape(bezierCurve);
-        break;
-    }
-    case TypeLagrange:
-    {
-        Lagrange lagrange;
-        
-        std::vector<float> x;
-        std::vector<float> y;
-
-        float minX = points[0].x;
-        float maxX = points[0].x;
-
-        for (vertex vertex : points)
-        {
-            x.push_back(vertex.x);
-            y.push_back(vertex.y);
-
-            if (minX > vertex.x)
-                minX = vertex.x;
-
-            else if (maxX < vertex.x)
-                maxX = vertex.x;
-        }
-
-        lagrange.xs = x;
-        lagrange.ys = y;
-
-        curve.CalculateCurve(minX, maxX, 50, lagrange);
-        break;
-    }
-    case TypeHermite:
-    {
-        if (points.size() != 2 || deriv1Points.size() != 2) return;
-
-        Hermite hermite;
-
-        hermite.v1.x = points[0].x;
-        hermite.v1.y = points[0].y;
-        hermite.fp1 = deriv1Points[0].y;
-
-        hermite.v2.x = points[1].x;
-        hermite.v2.y = points[1].y;
-        hermite.fp2 = deriv1Points[1].y;
-
-        float minX = hermite.v1.x;
-        float maxX = hermite.v2.x;
-
-        if (minX > maxX)
-        {
-            float temp = minX;
-            minX = maxX;
-            maxX = temp;
-        }
-
-        curve.CalculateCurve(minX, maxX, 50, hermite);
-        break;
-    }
-    }
-
+    Curve* curve = new Curve();
+    curve->SetType(type);
+    curve->m_function->ClearControlPoints();
+    curve->m_function->controlPoints = points;
+    curve->CalculateCurve();
     
-    vCurves.push_back(curve);
+    m_vCurves.push_back(curve);
 
     if (isMirorO)
     {
-        std::vector<vertex> altPoints;
+        std::vector<vertex*> altPoints;
 
         for (int i = 0; i < points.size(); ++i)
         {
-            altPoints.push_back(-points[i]);
+            altPoints.push_back(new vertex(- points[i]->x, -points[i]->y ));
         }
 
-        TraceCourbe(type, altPoints, deriv1Points);
+        TraceCourbe(type, altPoints);
     }
 
     if (isMirorX)
     {
-        std::vector<vertex> altPoints;
+        std::vector<vertex*> altPoints;
 
         for (int i = 0; i < points.size(); ++i)
         {
-            altPoints.push_back({points[i].x, -points[i].y});
+            altPoints.push_back(new vertex(points[i]->x, -points[i]->y));
         }
 
-        TraceCourbe(type, altPoints, deriv1Points);
+        TraceCourbe(type, altPoints);
     }
 
     if (isMirorY)
     {
-        std::vector<vertex> altPoints;
+        std::vector<vertex*> altPoints;
 
         for (int i = 0; i < points.size(); ++i)
         {
-            altPoints.push_back({-points[i].x, points[i].y});
+            altPoints.push_back(new vertex(-points[i]->x, points[i]->y));
         }
 
-        TraceCourbe(type, altPoints, deriv1Points);
+        TraceCourbe(type, altPoints);
     }
 }
 

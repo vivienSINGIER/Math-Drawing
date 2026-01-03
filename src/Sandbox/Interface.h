@@ -123,21 +123,20 @@ public:
 private:
 	CreationStep currentStep = NotStart;
 
-	Type currentType;
+	FunctionType currentType;
 
 	int numPoints = 0;
-	std::vector<vertex> points;
-	std::vector<vertex> derivPoints;
+	std::vector<vertex*> points;
 	int currentPos = 0;
 	bool setX = true;
 
 	std::string currentValue = "";
 
 	void StartCreation();
-	void SelectParameters(Type type);
+	void SelectParameters(FunctionType type);
 	void SelectNumberOfPoint(const sf::Event& event);
 	void CreatePoint(const sf::Event& event);
-	void CreateDerivPoint(const sf::Event& event);
+	//void CreateDerivPoint(const sf::Event& event);
 	void SelectMiror(const sf::Event& event);
 };
 
