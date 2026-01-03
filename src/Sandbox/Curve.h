@@ -17,6 +17,7 @@ public:
     
     sf::Vector2f origin;
     std::vector<vertex> m_vertices;
+    std::vector<SymetryAxis*> m_vSymetries;
     
     MathFunction* m_function = nullptr;
 
@@ -27,6 +28,8 @@ public:
     void DrawPoints();
     
     void CalculateCurve(MathFunction* func = nullptr);
+    vertex* HandleSelection(float x, float y);
+    void AddSymetry();
 };
 
 #include "Curve.inl"
