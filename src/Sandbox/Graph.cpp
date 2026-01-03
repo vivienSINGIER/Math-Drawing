@@ -17,8 +17,8 @@
 void Graph::OnInitialize()
 {
     //InitDiamond();
-    // InitHeart();
-    // InitSpade();
+    //InitHeart();
+    //InitSpade();
     //InitClub();
     
     //Zoom
@@ -129,9 +129,12 @@ void Graph::OnEvent(const sf::Event& event)
         }
         if (event.key.code == sf::Keyboard::Subtract)
         {
-            delete m_vCurves[m_selectedIndex];
-            m_vCurves.erase(m_vCurves.begin() + m_selectedIndex);
-            m_selectedIndex--;
+            if (m_vCurves.size() >= 1)
+            {
+                delete m_vCurves[m_selectedIndex];
+                m_vCurves.erase(m_vCurves.begin() + m_selectedIndex);
+                m_selectedIndex--;
+            }
         }
 
         // Curve Selection
@@ -600,6 +603,17 @@ void Graph::TraceCourbe(FunctionType type, std::vector<vertex*> points, bool isM
             altPoints.push_back(new vertex(- points[i]->x, -points[i]->y ));
         }
 
+        if (type == HERMITE)
+        {
+            vertex* temp = altPoints[0];
+            altPoints[0] = altPoints[1];
+            altPoints[1] = temp;
+
+            temp = altPoints[2];
+            altPoints[2] = altPoints[3];
+            altPoints[3] = temp;
+        }
+
         TraceCourbe(type, altPoints);
     }
 
@@ -622,6 +636,17 @@ void Graph::TraceCourbe(FunctionType type, std::vector<vertex*> points, bool isM
         for (int i = 0; i < points.size(); ++i)
         {
             altPoints.push_back(new vertex(-points[i]->x, points[i]->y));
+        }
+
+        if (type == HERMITE)
+        {
+            vertex* temp = altPoints[0];
+            altPoints[0] = altPoints[1];
+            altPoints[1] = temp;
+
+            temp = altPoints[2];
+            altPoints[2] = altPoints[3];
+            altPoints[3] = temp;
         }
 
         TraceCourbe(type, altPoints);

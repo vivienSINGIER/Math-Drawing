@@ -254,20 +254,34 @@ void Interface::SelectMiror(const sf::Event& event)
 
         m_pGraph->TraceCourbe(currentType, points, derivPoints, isMiror);
     }*/
+    if (event.key.code == sf::Keyboard::Backspace)
+    {
+        if (currentValue.size() != 0)
+            currentValue.pop_back();
+
+        std::cout << std::endl;
+
+        std::cout << currentValue;
+        return;
+    }
+
     if (event.key.code == sf::Keyboard::Enter)
     {
-        bool mirorO = true;
-        bool mirorX = true;
-        bool mirorY = true;
+        bool mirorO = false;
+        bool mirorX = false;
+        bool mirorY = false;
 
-        if (currentValue[0] == '0')
-            mirorO = false;
+        if (currentValue.size() >= 1)
+            if (currentValue[0] == '1')
+                mirorO = true;
 
-        if (currentValue[1] == '0')
-            mirorX = false;
+        if (currentValue.size() >= 2)
+            if (currentValue[1] == '1')
+                mirorX = true;
 
-        if (currentValue[2] == '0')
-            mirorY = false;
+        if (currentValue.size() >= 3)
+            if (currentValue[2] == '1')
+                mirorY = true;
 
         system("cls");
 

@@ -281,7 +281,7 @@ struct Hermite : public MathFunction
         std::vector<vertex> result;
         if (controlPoints.size() != 4) return result;
 
-        SortControlPoints();
+        //SortControlPoints();
         
         float start = controlPoints[0]->x;
         float end = controlPoints[1]->x;
