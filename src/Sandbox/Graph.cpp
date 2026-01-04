@@ -598,67 +598,37 @@ void Graph::TraceCourbe(FunctionType type, std::vector<vertex*> points, bool isM
     curve->SetType(type);
     curve->m_function->ClearControlPoints();
     curve->m_function->controlPoints = points;
-    curve->CalculateCurve();
     
     m_vCurves.push_back(curve);
 
     if (isMirorO)
     {
-        std::vector<vertex*> altPoints;
-
-        for (int i = 0; i < points.size(); ++i)
-        {
-            altPoints.push_back(new vertex(- points[i]->x, -points[i]->y ));
-        }
-
-        if (type == HERMITE)
-        {
-            vertex* temp = altPoints[0];
-            altPoints[0] = altPoints[1];
-            altPoints[1] = temp;
-
-            temp = altPoints[2];
-            altPoints[2] = altPoints[3];
-            altPoints[3] = temp;
-        }
-
-        TraceCourbe(type, altPoints);
+        SymetryAxis* sa = curve->AddSymetry();
+        sa->controlPoints[0]->x = -0.5f;
+        sa->controlPoints[0]->y = 0.5f;
+        sa->controlPoints[1]->x = 0.5f;
+        sa->controlPoints[1]->y = -0.5f;
     }
 
     if (isMirorX)
     {
-        std::vector<vertex*> altPoints;
-
-        for (int i = 0; i < points.size(); ++i)
-        {
-            altPoints.push_back(new vertex(points[i]->x, -points[i]->y));
-        }
-
-        TraceCourbe(type, altPoints);
+        SymetryAxis* sa = curve->AddSymetry();
+        sa->controlPoints[0]->x = 0.f;
+        sa->controlPoints[0]->y = 0.f;
+        sa->controlPoints[1]->x = 1.f;
+        sa->controlPoints[1]->y = 0.f;
     }
 
     if (isMirorY)
     {
-        std::vector<vertex*> altPoints;
-
-        for (int i = 0; i < points.size(); ++i)
-        {
-            altPoints.push_back(new vertex(-points[i]->x, points[i]->y));
-        }
-
-        if (type == HERMITE)
-        {
-            vertex* temp = altPoints[0];
-            altPoints[0] = altPoints[1];
-            altPoints[1] = temp;
-
-            temp = altPoints[2];
-            altPoints[2] = altPoints[3];
-            altPoints[3] = temp;
-        }
-
-        TraceCourbe(type, altPoints);
+        SymetryAxis* sa = curve->AddSymetry();
+        sa->controlPoints[0]->x = 0.f;
+        sa->controlPoints[0]->y = 0.f;
+        sa->controlPoints[1]->x = 0.f;
+        sa->controlPoints[1]->y = 1.f;
     }
+
+    curve->CalculateCurve();
 }
 
 

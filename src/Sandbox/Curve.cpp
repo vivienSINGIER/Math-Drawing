@@ -174,10 +174,11 @@ vertex* Curve::HandleSelection(float x, float y)
     return selected;
 }
 
-void Curve::AddSymetry()
+SymetryAxis* Curve::AddSymetry()
 {
     SymetryAxis* sa = new SymetryAxis();
     m_vSymetries.push_back(sa);
+    return sa;
 }
 
 #endif

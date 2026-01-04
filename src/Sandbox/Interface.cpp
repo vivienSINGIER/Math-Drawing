@@ -178,27 +178,7 @@ void Interface::CreatePoint(const sf::Event& event)
                 currentPos = 0;
 
                 currentStep = SelectMirors;
-                std::cout << "Select if you want a miror version from the origin (0 : no, 1 : yes), from X and from Y (all atttach)" << std::endl;
-
-
-                //if (currentType == BEZIER || currentType == LAGRANGE)
-                //{
-                //    currentStep = SelectMirors;
-                //    std::cout << "Select if you want a miror version from the origin (0 : no, 1 : yes), from X and from Y (all atttach)" << std::endl;
-                //    //m_pGraph->TraceCourbe(currentType, points);
-                //}
-                //else if (currentStep != CreateDerivPoints)
-                //{
-                //    currentStep = CreateDerivPoints;
-                //    std::cout << "Now the deriv point" << std::endl;
-                //    std::cout << "Select Y for point 1" << std::endl;
-                //}
-                //else
-                //{
-                //    currentStep = SelectMirors;
-                //    std::cout << "Select if you want a miror version from the origin (0 : no, 1 : yes), from X and from Y (all atttach)" << std::endl;
-                //}
-                
+                std::cout << "Select if you want a miror version from the origin (0 : no, 1 : yes), from X and from Y (all atttach)" << std::endl;                
             }
         }
 
@@ -210,50 +190,8 @@ void Interface::CreatePoint(const sf::Event& event)
     }
 }
 
-//void Interface::CreateDerivPoint(const sf::Event& event)
-//{
-//    if (event.key.code == sf::Keyboard::Enter)
-//    {
-//        float temp = std::stof(currentValue);
-//        currentValue = "";
-//        std::cout << std::endl;
-//
-//        derivPoints.push_back({points[currentPos].x,temp});
-//
-//        std::cout << "Select Y for point " << currentPos + 1 << std::endl;
-//
-//        currentPos++;
-//
-//        if (derivPoints.size() == numPoints)
-//        {
-//            system("cls");
-//            currentPos = 0;
-//            std::cout << "Select if you want a miror version from the origin (0 : no, 1 : yes), from X and from Y (all atttach)" << std::endl;
-//            currentStep = SelectMirors;
-//            //m_pGraph->TraceCourbe(currentType, points, derivPoints);
-//        }
-//    }
-//    else
-//    {
-//        currentValue += ConvertKeyCode::Convert(event.key);
-//    }
-//}
-
 void Interface::SelectMiror(const sf::Event& event)
 {
-    /*char temp = ConvertKeyCode::Convert(event.key);
-
-    if (temp == '0' || temp == '1')
-    {
-        bool isMiror = true;
-
-        if (temp == '0')
-            isMiror = false;
-
-        system("cls");
-
-        m_pGraph->TraceCourbe(currentType, points, derivPoints, isMiror);
-    }*/
     if (event.key.code == sf::Keyboard::Backspace)
     {
         if (currentValue.size() != 0)

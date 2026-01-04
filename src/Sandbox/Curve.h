@@ -29,7 +29,7 @@ public:
     
     void CalculateCurve(MathFunction* func = nullptr);
     vertex* HandleSelection(float x, float y);
-    void AddSymetry();
+    SymetryAxis* AddSymetry();
 };
 
 #include "Curve.inl"
