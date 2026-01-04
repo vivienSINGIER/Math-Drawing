@@ -564,4 +564,30 @@ struct ArcOfCircle : public MathFunction
     }
 };
 
+struct SymetryAxis : public  MathFunction
+{
+    float length = 50.0f;
+    sf::Vector2f dir;
+    
+    SymetryAxis()
+    {
+        controlPointLimit = 2;
+        controlPoints.push_back(new vertex(0.f, 0.f));
+        controlPoints.push_back(new vertex(1.f, 1.f));
+    }
+
+    std::vector<vertex> operator()() override
+    {
+        std::vector<vertex> result;
+
+        sf::Vector2f v1 = {controlPoints[0]->x, controlPoints[0]->y};
+        sf::Vector2f v2 = {controlPoints[1]->x, controlPoints[1]->y};
+
+        dir = v1 - v2;
+        Utils::Normalize(dir);
+        
+        return result;
+    }
+};
+
 #endif

@@ -151,4 +151,9 @@ namespace Utils
 		
 		return magnitude;		
 	}
+
+	float Dot(sf::Vector2f const& v1, sf::Vector2f const& v2)
+	{
+		return v1.x * v2.x + v1.y * v2.y;
+	}
 }

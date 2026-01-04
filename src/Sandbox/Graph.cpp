@@ -111,6 +111,14 @@ void Graph::OnEvent(const sf::Event& event)
             }
         }
 
+        if (event.key.code == sf::Keyboard::S)
+        {
+            if (m_selectedCurve != nullptr)
+            {
+                m_selectedCurve->AddSymetry();
+            }
+        }
+
         // Curve Selection
         if (event.key.code == sf::Keyboard::Up)
             m_selectedIndex++;
@@ -278,7 +286,7 @@ void Graph::HandleVertexSelection(bool state)
     sf::Vector2i mousePos = sf::Mouse::getPosition(*GameManager::Get()->GetWindow());
     sf::Vector2f worldPos = m_pWindow->mapPixelToCoords(mousePos, *m_pView);
     
-    vertex* newSelected = m_selectedCurve->m_function->HandleSelection(worldPos.x, worldPos.y);
+    vertex* newSelected = m_selectedCurve->HandleSelection(worldPos.x, worldPos.y);
 
     if (newSelected != nullptr)
     {
