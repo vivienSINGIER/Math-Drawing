@@ -13,9 +13,12 @@ void Interface::OnEvent(const sf::Event& event)
 {
     if (event.type == sf::Event::KeyPressed)
     {
-        if (event.key.code == sf::Keyboard::A && currentStep == NotStart)
+        if (event.key.code == sf::Keyboard::A)
         {
-            StartCreation();
+            if (currentStep == NotStart)
+                StartCreation();
+            else
+                StopCreation();
         }
 
         else if (event.key.code == sf::Keyboard::H && currentStep == SelectType)
@@ -126,16 +129,19 @@ void Interface::SelectNumberOfPoint(const sf::Event& event)
 
     if (event.key.code == sf::Keyboard::Enter)
     {
-        currentStep = CreatePoints;
-        numPoints = std::stoi(currentValue);
-        currentValue = "";
-        system("cls");
-        std::cout << "Select X for point 1" << std::endl;
-
-        //set list
-        for (int i = 0; i < numPoints; i++)
+        if (currentValue.size() != 0)
         {
-            points.push_back(new vertex(0.f, 0.f));
+            currentStep = CreatePoints;
+            numPoints = std::stoi(currentValue);
+            currentValue = "";
+            system("cls");
+            std::cout << "Select X for point 1" << std::endl;
+
+            //set list
+            for (int i = 0; i < numPoints; i++)
+            {
+                points.push_back(new vertex(0.f, 0.f));
+            }
         }
     }
     else if (temp != '.' && temp != 'N' && temp != '-')
@@ -164,13 +170,13 @@ void Interface::CreatePoint(const sf::Event& event)
         if (setX)
         {
             points[currentPos]->x = temp;
-            std::cout << "Select Y for point " << currentPos + 1 << std::endl;
+            std::cout << "Select Y for point " << currentPos + 1 << " / " << numPoints << std::endl;
         }
         else
         {
             points[currentPos]->y = temp;
             currentPos++;
-            std::cout << "Select X for point " << currentPos + 1 << std::endl;
+            std::cout << "Select X for point " << currentPos + 1 << " / " << numPoints << std::endl;
 
             if (currentPos == numPoints)
             {
@@ -221,16 +227,34 @@ void Interface::SelectMiror(const sf::Event& event)
             if (currentValue[2] == '1')
                 mirorY = true;
 
-        system("cls");
-
         m_pGraph->TraceCourbe(currentType, points, mirorO, mirorX, mirorY);
 
-        currentStep = NotStart;
+        StopCreation();
     }
     else
     {
         currentValue += ConvertKeyCode::Convert(event.key);
     }
+}
+
+void Interface::StopCreation()
+{
+    currentStep = NotStart;
+    numPoints = 0;
+    
+    for (vertex* vertex : points)
+    {
+        delete vertex;
+    }
+
+    points.clear();
+
+    currentPos = 0;
+    setX = true;
+
+    currentValue = "";
+
+    system("cls");
 }
 
 #endif

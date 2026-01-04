@@ -138,6 +138,7 @@ private:
 	void CreatePoint(const sf::Event& event);
 	//void CreateDerivPoint(const sf::Event& event);
 	void SelectMiror(const sf::Event& event);
+	void StopCreation();
 };
 
 
