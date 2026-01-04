@@ -181,4 +181,10 @@ SymetryAxis* Curve::AddSymetry()
     return sa;
 }
 
+void Curve::RemoveVertex(vertex* vertexToRemove)
+{
+    m_function->RemoveControlPoint(vertexToRemove);
+    CalculateCurve();
+}
+
 #endif

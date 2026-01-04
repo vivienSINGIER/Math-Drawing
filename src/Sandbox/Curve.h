@@ -30,6 +30,8 @@ public:
     void CalculateCurve(MathFunction* func = nullptr);
     vertex* HandleSelection(float x, float y);
     SymetryAxis* AddSymetry();
+
+    void RemoveVertex(vertex* vertexToRemove);
 };
 
 #include "Curve.inl"

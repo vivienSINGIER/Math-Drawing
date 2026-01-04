@@ -155,6 +155,14 @@ void Graph::OnEvent(const sf::Event& event)
             m_selectedCurve = m_vCurves[m_selectedIndex];
         else
             m_selectedCurve = nullptr;
+
+        if (event.key.code == sf::Keyboard::Backspace)
+        {
+            if (m_selectedVertex != nullptr)
+            {
+                m_selectedCurve->RemoveVertex(m_selectedVertex);
+            }
+        }
     }
 }
 
