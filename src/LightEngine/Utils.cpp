@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include "Sandbox/pch.h"
+
 namespace Utils 
 {
 	float Pow(float x, int n)
@@ -66,22 +68,28 @@ namespace Utils
 	
 	float Cos(float x)
 	{
-		float result = 0.0f;
-		for (int i = 0; i < 10; i++)
+		float term = 1.0f;
+		float sum  = 1.0f;
+
+		for (int i = 1; i < 10; i++)
 		{
-			result += pow(-1, i) * (pow(x, 2 * i) / 2) / Factorial(2 * i);
+			term *= -x * x / ((2*i - 1) * (2*i));
+			sum += term;
 		}
-		return result;
+		return sum;
 	}
 
 	float Sin(float x)
 	{
-		float result = 0.0f;
-		for (int i = 0; i < 10; i++)
+		float term = x;
+		float sum  = x;
+
+		for (int i = 1; i < 10; i++)
 		{
-			result += pow(-1, i) * (pow(x, 2 * i + 1) / 2) / Factorial(2 * i + 1);
+			term *= -x * x / ((2*i) * (2*i + 1));
+			sum += term;
 		}
-		return result;
+		return sum;
 	}
 	
     bool Normalize(sf::Vector2f& vector)

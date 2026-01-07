@@ -457,8 +457,8 @@ struct Ellipse : public MathFunction
         while (tTemp < tMax + tStep)
         {
             vertex v;
-            v.x = origin.x + a * cos(tTemp);
-            v.y = origin.y + b * sin(tTemp);
+            v.x = origin.x + a * Utils::Cos(tTemp);
+            v.y = origin.y + b * Utils::Sin(tTemp);
             result.push_back(v);
             tTemp += tStep;
         }
