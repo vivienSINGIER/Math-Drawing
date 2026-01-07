@@ -77,9 +77,9 @@ void Curve::DrawPath(sf::Color color, bool showSymetrie)
         }
 
         float t = value / 255.f;
-        float hue = t * 360.f;
+        float h = t * 360.f;
 
-        sf::Color c = Utils::HSVtoRGB(hue, 0.5f, 1.f);
+        sf::Color c = Utils::HSVtoRGB(h, 0.4f, 1.f);
 
         color.r = c.r;
         color.g = c.g;

@@ -55,6 +55,8 @@ private:
 
     bool showSymetrie = true;
 
+    bool showAxe = false;
+
     Interface* m_pInterface = nullptr;
     
     void DrawGraph();

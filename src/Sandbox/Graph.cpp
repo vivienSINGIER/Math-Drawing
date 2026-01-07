@@ -167,6 +167,11 @@ void Graph::OnEvent(const sf::Event& event)
             showSymetrie = !showSymetrie;
         }
 
+        if (event.key.code == sf::Keyboard::G)
+        {
+            showAxe = !showAxe;
+        }
+
         if (event.key.code == sf::Keyboard::Backspace)
         {
             if (m_selectedVertex != nullptr)
@@ -188,7 +193,8 @@ void Graph::OnEvent(const sf::Event& event)
 void Graph::OnUpdate()
 {
     HandleMouseMovement();
-    DrawGraph();
+    if (showAxe)
+        DrawGraph();
     m_pInterface->Update();
 
     for (Curve* curve : m_vCurves)
