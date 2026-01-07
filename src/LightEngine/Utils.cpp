@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include "Sandbox/pch.h"
+
 namespace Utils 
 {
 	float Pow(float x, int n)
@@ -66,20 +68,20 @@ namespace Utils
 	
 	float Cos(float x)
 	{
-		float result = 0.0f;
+		double result = 0.0f;
 		for (int i = 0; i < 10; i++)
 		{
-			result += pow(-1, i) * (pow(x, 2 * i) / 2) / Factorial(2 * i);
+			result += Pow(-1, i) * Pow(x, 2 * i) / Factorial(2 * i);
 		}
 		return result;
 	}
 
 	float Sin(float x)
 	{
-		float result = 0.0f;
+		double result = 0.0f;
 		for (int i = 0; i < 10; i++)
 		{
-			result += pow(-1, i) * (pow(x, 2 * i + 1) / 2) / Factorial(2 * i + 1);
+			result += Pow(-1, i) * Pow(x, 2 * i + 1) / Factorial(2 * i + 1);
 		}
 		return result;
 	}
@@ -155,5 +157,10 @@ namespace Utils
 	float Dot(sf::Vector2f const& v1, sf::Vector2f const& v2)
 	{
 		return v1.x * v2.x + v1.y * v2.y;
+	}
+
+	float RadToDeg(float rad)
+	{
+		return rad * 180 / PI;
 	}
 }

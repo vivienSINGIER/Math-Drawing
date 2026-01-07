@@ -25,4 +25,6 @@ namespace Utils
 	sf::Vector2f NormalizeVector(sf::Vector2f const& vector);
 	float Norm(sf::Vector2f const& vector);
 	float Dot(sf::Vector2f const& v1, sf::Vector2f const& v2);
+
+	float RadToDeg(float rad);
 }

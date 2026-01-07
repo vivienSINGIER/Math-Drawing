@@ -18,8 +18,8 @@ void Graph::OnInitialize()
 {
     //InitDiamond();
     //InitHeart();
-    //InitSpade();
-    //InitClub();
+    InitSpade();
+    InitClub();
     
     //Zoom
     m_pView = GameManager::Get()->GetView();
