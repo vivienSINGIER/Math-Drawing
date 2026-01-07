@@ -162,6 +162,11 @@ void Graph::OnEvent(const sf::Event& event)
             m_selectedIndex = 0;
         }
 
+        if (event.key.code == sf::Keyboard::H)
+        {
+            showSymetrie = !showSymetrie;
+        }
+
         if (event.key.code == sf::Keyboard::Backspace)
         {
             if (m_selectedVertex != nullptr)
@@ -191,10 +196,10 @@ void Graph::OnUpdate()
         if (curve == m_selectedCurve)
         {
             curve->DrawPoints();
-            curve->DrawPath(sf::Color::Blue);
+            curve->DrawPath(sf::Color::Blue, showSymetrie);
         }
         else
-            curve->DrawPath(sf::Color::Red);
+            curve->DrawPath(sf::Color::Red, showSymetrie);
     }
 
     if (m_selectedVertex == nullptr) return;

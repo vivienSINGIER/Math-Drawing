@@ -30,7 +30,7 @@ public:
     FunctionType GetFunctionType() { return m_type; }
     void SetType(FunctionType type);
     
-    void DrawPath(sf::Color color);
+    void DrawPath(sf::Color color, bool showSymetrie = true);
     void DrawPoints();
     
     void CalculateCurve(MathFunction* func = nullptr);

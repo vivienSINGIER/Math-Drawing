@@ -53,6 +53,8 @@ private:
     std::vector<Curve*> m_vCurves;
     vertex* m_selectedVertex = nullptr;
 
+    bool showSymetrie = true;
+
     Interface* m_pInterface = nullptr;
     
     void DrawGraph();

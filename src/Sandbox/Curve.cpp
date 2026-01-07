@@ -51,7 +51,7 @@ void Curve::SetType(FunctionType type)
     }
 }
 
-void Curve::DrawPath(sf::Color color)
+void Curve::DrawPath(sf::Color color, bool showSymetrie)
 {
     //Update color
     if (randomColor)
@@ -114,8 +114,11 @@ void Curve::DrawPath(sf::Color color)
             Utils::Normalize(axisDir);
             sf::Vector2f axisPos = { sa->controlPoints[0]->x, sa->controlPoints[0]->y };
 
-            Debug::DrawLine(sa->controlPoints[0]->x * TILE_SIZE, -sa->controlPoints[0]->y * TILE_SIZE,
-                sa->controlPoints[1]->x * TILE_SIZE, -sa->controlPoints[1]->y * TILE_SIZE, sf::Color::Magenta);
+            if (showSymetrie)
+            {
+                Debug::DrawLine(sa->controlPoints[0]->x * TILE_SIZE, -sa->controlPoints[0]->y * TILE_SIZE,
+                    sa->controlPoints[1]->x * TILE_SIZE, -sa->controlPoints[1]->y * TILE_SIZE, sf::Color::Magenta);
+            }
 
             int size = segments.size();
             for (int k = 0; k < size; ++k)
