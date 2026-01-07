@@ -2,6 +2,8 @@
 
 #include <SFML/System/Vector2.hpp>
 
+class sf::Color;
+
 namespace Utils
 {
 	float Pow(float x, int n);
@@ -27,4 +29,6 @@ namespace Utils
 	float Dot(sf::Vector2f const& v1, sf::Vector2f const& v2);
 
 	float RadToDeg(float rad);
+
+	sf::Color HSVtoRGB(float h, float s, float v);
 }

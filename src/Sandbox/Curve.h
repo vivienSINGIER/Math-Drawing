@@ -21,6 +21,12 @@ public:
     
     MathFunction* m_function = nullptr;
 
+    bool randomColor = false;
+    int currentPos = 0;
+    int dir = 1;
+    float minY;
+    float maxY;
+
     FunctionType GetFunctionType() { return m_type; }
     void SetType(FunctionType type);
     
@@ -32,6 +38,7 @@ public:
     SymetryAxis* AddSymetry();
 
     void RemoveVertex(vertex* vertexToRemove);
+    void ChangeRandomColor();
 };
 
 #include "Curve.inl"
