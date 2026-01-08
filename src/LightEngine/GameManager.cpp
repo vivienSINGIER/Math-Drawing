@@ -70,7 +70,11 @@ void GameManager::Run()
 	sf::Clock clock;
 	while (mpWindow->isOpen())
 	{
-		SetDeltaTime(clock.restart().asSeconds());
+		float dt = clock.restart().asSeconds();
+
+		mTime += dt;
+
+		SetDeltaTime(dt);
 
 		HandleInput();
 		

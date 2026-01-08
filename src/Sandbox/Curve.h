@@ -21,15 +21,24 @@ public:
     
     MathFunction* m_function = nullptr;
 
+    bool randomColor = false;
+    int currentPos = 0;
+    int dir = 1;
+    float minY;
+    float maxY;
+
     FunctionType GetFunctionType() { return m_type; }
     void SetType(FunctionType type);
     
-    void DrawPath(sf::Color color);
+    void DrawPath(sf::Color color, bool showSymetrie = true);
     void DrawPoints();
     
     void CalculateCurve(MathFunction* func = nullptr);
     vertex* HandleSelection(float x, float y);
-    void AddSymetry();
+    SymetryAxis* AddSymetry();
+
+    void RemoveVertex(vertex* vertexToRemove);
+    void ChangeRandomColor();
 };
 
 #include "Curve.inl"

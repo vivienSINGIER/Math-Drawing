@@ -68,6 +68,22 @@ struct MathFunction
         controlPoints.push_back(v);
         return v;
     }
+    virtual void RemoveControlPoint(vertex* vertexToRemove)
+    {
+        if (controlPoints.size() <= 2) return;
+
+        int i = 0;
+        for (vertex* vertex : controlPoints)
+        {
+            if (vertex == vertexToRemove)
+            {
+                controlPoints.erase(controlPoints.begin() + i);
+                return;
+            }
+
+            i++;
+        }
+    }
 };
 
 struct Linear : public MathFunction
@@ -130,6 +146,8 @@ struct Parabola : public MathFunction
 
         return result;
     }
+
+    void RemoveControlPoint(vertex* vertexToRemove) override {};
 };
 
 struct Lagrange : public MathFunction
@@ -281,7 +299,7 @@ struct Hermite : public MathFunction
         std::vector<vertex> result;
         if (controlPoints.size() != 4) return result;
 
-        SortControlPoints();
+        //SortControlPoints();
         
         float start = controlPoints[0]->x;
         float end = controlPoints[1]->x;
@@ -339,6 +357,8 @@ struct Hermite : public MathFunction
 
         return result;
     }
+
+    void RemoveControlPoint(vertex* vertexToRemove) override {};
 };
 
 struct BezierCurve : public MathFunction
@@ -464,6 +484,8 @@ struct Ellipse : public MathFunction
         }
         return result;
     }
+
+    void RemoveControlPoint(vertex* vertexToRemove) override {};
 };
 
 struct ArcOfCircle : public MathFunction
@@ -562,6 +584,8 @@ struct ArcOfCircle : public MathFunction
         
         return result;
     }
+
+    void RemoveControlPoint(vertex* vertexToRemove) override {};
 };
 
 struct SymetryAxis : public  MathFunction
@@ -588,6 +612,8 @@ struct SymetryAxis : public  MathFunction
         
         return result;
     }
+
+    void RemoveControlPoint(vertex* vertexToRemove) override {};
 };
 
 #endif

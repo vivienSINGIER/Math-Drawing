@@ -25,6 +25,7 @@ class GameManager
     Scene* mpScene;
 
     float mDeltaTime;
+    float mTime;
 
     int mWindowWidth;
     int mWindowHeight;
@@ -52,6 +53,7 @@ public:
 
     sf::RenderWindow* GetWindow() const { return mpWindow; }
     float GetDeltaTime() const { return mDeltaTime; }
+    float GetTime() const { return mTime; }
     Scene* GetScene() const { return mpScene; }
     sf::Font& GetFont() { return mFont; };
     sf::View* GetView() const { return mpView; }

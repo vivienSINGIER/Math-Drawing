@@ -4,6 +4,10 @@
 #include "Curve.h"
 
 #include "Debug.h"
+#include "GameManager.h"
+#include "Utils.h"
+
+#include <iostream>
 
 struct Segment
 {
@@ -47,8 +51,41 @@ void Curve::SetType(FunctionType type)
     }
 }
 
-void Curve::DrawPath(sf::Color color)
+void Curve::DrawPath(sf::Color color, bool showSymetrie)
 {
+    //Update color
+    if (randomColor)
+    {
+        //classic
+        //color.r = (sin(time) + 1) * 255/2;
+        //color.g = (cos(time) + 1) * 255 / 2;
+        //color.b = (cos(time) + 1) * 255 / 2;
+
+        //courbe
+        float y = m_vertices[currentPos].y;
+
+        float value = (y - minY) * 255.0f / (maxY - minY);
+        currentPos += dir;
+
+        if (currentPos == m_vertices.size() - 1)
+        {
+            dir = -1;
+        }
+        else if (currentPos == 0)
+        {
+            dir = 1;
+        }
+
+        float t = value / 255.f;
+        float h = t * 360.f;
+
+        sf::Color c = Utils::HSVtoRGB(h, 0.4f, 1.f);
+
+        color.r = c.r;
+        color.g = c.g;
+        color.b = c.b;
+    }
+    //
     if (m_vertices.size() <= 1)
         return;
     
@@ -77,8 +114,11 @@ void Curve::DrawPath(sf::Color color)
             Utils::Normalize(axisDir);
             sf::Vector2f axisPos = { sa->controlPoints[0]->x, sa->controlPoints[0]->y };
 
-            Debug::DrawLine(sa->controlPoints[0]->x * TILE_SIZE, -sa->controlPoints[0]->y * TILE_SIZE,
-                sa->controlPoints[1]->x * TILE_SIZE, -sa->controlPoints[1]->y * TILE_SIZE, sf::Color::Magenta);
+            if (showSymetrie)
+            {
+                Debug::DrawLine(sa->controlPoints[0]->x * TILE_SIZE, -sa->controlPoints[0]->y * TILE_SIZE,
+                    sa->controlPoints[1]->x * TILE_SIZE, -sa->controlPoints[1]->y * TILE_SIZE, sf::Color::Magenta);
+            }
 
             int size = segments.size();
             for (int k = 0; k < size; ++k)
@@ -142,10 +182,18 @@ void Curve::CalculateCurve(MathFunction* f)
     m_vertices.clear();
     m_vertices = (*m_function)();
 
+    minY = m_vertices[0].y;
+    maxY = m_vertices[0].y;
+
     for (vertex v : m_vertices)
     {
         v.x += origin.x ;
         v.y += origin.y ;
+
+        if (v.y < minY)
+            minY = v.y;
+        if (v.y > maxY)
+            maxY = v.y;
     }
 
     for (SymetryAxis* sa : m_vSymetries)
@@ -174,10 +222,22 @@ vertex* Curve::HandleSelection(float x, float y)
     return selected;
 }
 
-void Curve::AddSymetry()
+SymetryAxis* Curve::AddSymetry()
 {
     SymetryAxis* sa = new SymetryAxis();
     m_vSymetries.push_back(sa);
+    return sa;
+}
+
+void Curve::RemoveVertex(vertex* vertexToRemove)
+{
+    m_function->RemoveControlPoint(vertexToRemove);
+    CalculateCurve();
+}
+
+void Curve::ChangeRandomColor()
+{
+    randomColor = !randomColor;
 }
 
 #endif
