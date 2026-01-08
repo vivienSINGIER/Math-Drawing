@@ -74,7 +74,7 @@ void Graph::OnEvent(const sf::Event& event)
         m_pView->setSize(m_windowSize * m_currentZoom);
     }
 
-    if (event.type == sf::Event::KeyPressed)
+    if (event.type == sf::Event::KeyPressed && m_pInterface->IsUse())
     {
         switch (event.key.code)
         {

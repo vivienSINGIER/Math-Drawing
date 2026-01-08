@@ -120,6 +120,8 @@ public:
 
 	void OnEvent(const sf::Event& event);
 
+	bool IsUse() { return currentStep == NotStart; }
+
 private:
 	CreationStep currentStep = NotStart;
 
