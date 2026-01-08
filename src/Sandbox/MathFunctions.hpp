@@ -576,8 +576,8 @@ struct ArcOfCircle : public MathFunction
         for (int i = 0; i <= n; i++)
         {
             vertex v;
-            v.x = origin.x + radius * cos(tTemp);
-            v.y = origin.y + radius * sin(tTemp);
+            v.x = origin.x + radius * Utils::Cos(tTemp);
+            v.y = origin.y + radius * Utils::Sin(tTemp);
             result.push_back(v);
             tTemp += tStep;
         }
