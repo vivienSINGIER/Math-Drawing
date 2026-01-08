@@ -241,11 +241,6 @@ void Interface::StopCreation()
 {
     currentStep = NotStart;
     numPoints = 0;
-    
-    for (vertex* vertex : points)
-    {
-        delete vertex;
-    }
 
     points.clear();
 
